@@ -42,14 +42,37 @@ export default function InstituteLogo({ className = '', theme = 'white' }: Insti
     );
   }
 
+  // Extract positioning to mirror it in the mask
+  let maskPos = 'center';
+  if (className.includes('object-left')) maskPos = 'left center';
+  else if (className.includes('object-right')) maskPos = 'right center';
+
   return (
-    <img 
-      src="https://i.ibb.co/k2b42LsD/23ae5ef8-a3ae-4399-8cfd-be88f3a82bce-removalai-preview.png" 
-      alt="Brightmind Institute of Education" 
-      className={`object-contain ${filterClass} ${className}`}
-      onError={() => {
-        setImgError(true);
-      }}
-    />
+    <div className={`relative inline-flex items-center justify-center ${className}`}>
+      {/* Invisible original image to establish layout bounds */}
+      <img 
+        src="https://i.ibb.co/k2b42LsD/23ae5ef8-a3ae-4399-8cfd-be88f3a82bce-removalai-preview.png" 
+        alt="Brightmind Institute of Education" 
+        className="w-auto h-full opacity-0 pointer-events-none select-none max-w-full"
+        style={{ objectFit: 'contain' }}
+        onError={() => {
+          setImgError(true);
+        }}
+      />
+      {/* Masked color layer */}
+      <div 
+        className={`absolute inset-0 w-full h-full pointer-events-none ${theme === 'white' ? 'bg-white' : 'bg-[#0E1C35]'}`}
+        style={{
+          WebkitMaskImage: `url('https://i.ibb.co/k2b42LsD/23ae5ef8-a3ae-4399-8cfd-be88f3a82bce-removalai-preview.png')`,
+          WebkitMaskSize: 'contain',
+          WebkitMaskPosition: maskPos,
+          WebkitMaskRepeat: 'no-repeat',
+          maskImage: `url('https://i.ibb.co/k2b42LsD/23ae5ef8-a3ae-4399-8cfd-be88f3a82bce-removalai-preview.png')`,
+          maskSize: 'contain',
+          maskPosition: maskPos,
+          maskRepeat: 'no-repeat',
+        }}
+      />
+    </div>
   );
 }
