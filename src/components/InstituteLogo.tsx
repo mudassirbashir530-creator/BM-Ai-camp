@@ -44,7 +44,7 @@ export default function InstituteLogo({ className = '', theme = 'white' }: Insti
 
   return (
     <img 
-      src="/logo.png" 
+      src="https://i.ibb.co/k2b42LsD/23ae5ef8-a3ae-4399-8cfd-be88f3a82bce-removalai-preview.png" 
       alt="Brightmind Institute of Education" 
       className={`object-contain ${filterClass} ${className}`}
       onError={() => {
