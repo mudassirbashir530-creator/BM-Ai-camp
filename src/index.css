@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #0E1C35;
+  --color-orange: #E05C1A;
+  --color-ink: #12120E;
+  --color-paper: #FAF7F2;
+  --color-white: #FFFFFF;
+  --color-mid: #7A7A72;
+  --color-border: #E4DFD5;
+  --color-teal: #0D7A6B;
+  --color-gold: #C49A2A;
+  --color-orange-light: #FFF4EE;
+  --color-navy-light: #EEF1F7;
+
+  --font-display: 'Cormorant Garamond', serif;
+  --font-sans: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* Print Styles */
+@media print {
+  html, body, #root, .min-h-screen, main {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    position: static !important;
+    display: block !important;
+  }
+
+  .no-print, header, footer, nav, aside {
+    display: none !important;
+  }
+
+  /* Uncollapse flex and grid elements during print so pages split correctly */
+  .flex, .grid, [class*="flex-"], [class*="grid-"] {
+    display: block !important;
+    float: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Reset layout boxes and spacing */
+  .max-w-7xl, .max-w-5xl, .max-w-2xl, .max-w-sm, .w-full, .flex-1 {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Nicely wrap sections with page breaks */
+  section {
+    page-break-inside: avoid !important;
+    margin-bottom: 24px !important;
+    padding: 16px 0 !important;
+    border-bottom: 1px dashed #cbd5e1 !important;
+  }
+
+  .print-card {
+    border: 1px solid #cbd5e1 !important;
+    background: #ffffff !important;
+    padding: 24px !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    margin-bottom: 16px !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #000000 !important;
+    page-break-after: avoid;
+  }
+
+  p, li, td, th, dd, dt, span {
+    color: #1e293b !important;
+  }
+
+  /* Table styling for print list audit */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  th, td {
+    border: 1px solid #94a3b8 !important;
+    padding: 6px 12px !important;
+  }
+}

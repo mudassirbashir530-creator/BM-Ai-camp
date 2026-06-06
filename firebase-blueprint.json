@@ -1,0 +1,38 @@
+{
+  "entities": {
+    "Registration": {
+      "title": "Registration",
+      "description": "Student registration for the AI Summer Camp",
+      "type": "object",
+      "properties": {
+        "refNo": { "type": "string" },
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "dob": { "type": "string" },
+        "gender": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "city": { "type": "string" },
+        "guardianName": { "type": "string" },
+        "guardianPhone": { "type": "string" },
+        "relation": { "type": "string" },
+        "schoolName": { "type": "string" },
+        "grade": { "type": "string" },
+        "stream": { "type": "string" },
+        "gradYear": { "type": "string" },
+        "heardFrom": { "type": "array", "items": { "type": "string" } },
+        "aiLevel": { "type": "string" },
+        "interests": { "type": "array", "items": { "type": "string" } },
+        "motivation": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["refNo", "firstName", "lastName", "dob", "gender", "email", "phone", "city", "guardianName", "guardianPhone", "schoolName", "grade", "aiLevel", "motivation", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/registrations/{registrationId}": {
+      "schema": { "$ref": "#/entities/Registration" },
+      "description": "Registrations submitted by users"
+    }
+  }
+}

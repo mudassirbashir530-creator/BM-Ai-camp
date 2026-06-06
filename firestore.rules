@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global lock
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function incoming() { return request.resource.data; }
+    
+    function isValidRegistration(data) {
+      return data.keys().hasAll(['refNo', 'firstName', 'lastName', 'dob', 'gender', 'email', 'phone', 'city', 'guardianName', 'guardianPhone', 'schoolName', 'grade', 'aiLevel', 'motivation', 'timestamp']) &&
+             data.refNo is string && data.refNo.size() <= 50 &&
+             data.firstName is string && data.firstName.size() <= 100 &&
+             data.lastName is string && data.lastName.size() <= 100 &&
+             data.dob is string && data.dob.size() <= 20 &&
+             data.gender is string && data.gender.size() <= 20 &&
+             data.email is string && data.email.size() <= 150 &&
+             data.phone is string && data.phone.size() <= 30 &&
+             data.city is string && data.city.size() <= 100 &&
+             data.guardianName is string && data.guardianName.size() <= 100 &&
+             data.guardianPhone is string && data.guardianPhone.size() <= 30 &&
+             data.schoolName is string && data.schoolName.size() <= 150 &&
+             data.grade is string && data.grade.size() <= 50 &&
+             data.aiLevel is string && data.aiLevel.size() <= 100 &&
+             data.motivation is string && data.motivation.size() <= 2000 &&
+             data.timestamp is string && data.timestamp.size() <= 50 &&
+             (!('relation' in data.keys()) || (data.relation is string && data.relation.size() <= 50)) &&
+             (!('stream' in data.keys()) || (data.stream is string && data.stream.size() <= 100)) &&
+             (!('gradYear' in data.keys()) || (data.gradYear is string && data.gradYear.size() <= 10)) &&
+             (!('heardFrom' in data.keys()) || (data.heardFrom is list && data.heardFrom.size() <= 20)) &&
+             (!('interests' in data.keys()) || (data.interests is list && data.interests.size() <= 20));
+    }
+
+    match /registrations/{registrationId} {
+      // Anyone can submit a registration, but they cannot read or update existing ones.
+      // We rely on the backend/console for admin reading. 
+      allow create: if isValidRegistration(incoming());
+      // No read access for public
+      allow read, update, delete: if false; 
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "AI Summer Camp",
+  "description": "Premium official platform for the Bright Mind Institute of Education's AI Summer Camp 2026 — featuring Registration, Schedule, Handbook, and Resources.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
