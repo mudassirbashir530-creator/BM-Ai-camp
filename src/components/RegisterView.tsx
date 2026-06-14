@@ -167,7 +167,7 @@ export default function RegisterView() {
       motivation: fields.motivation
     };
 
-    const response = await fetch('https://script.google.com/macros/s/AKfycbwQvCyV5dBaihwHhQ6SsUowPZ078Es3xRdt9LGuyBXLNjaUf9by3pd594PcPM3wP3tA/exec', {
+    const response = await fetch('/api/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
