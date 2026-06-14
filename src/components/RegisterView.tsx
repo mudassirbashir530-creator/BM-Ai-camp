@@ -145,6 +145,44 @@ export default function RegisterView() {
     return `AISC-2026-${randomSuffix}`;
   };
 
+  const submitForm = async (fields: RegistrationFormData) => {
+    const payload = {
+      fname: fields.firstName,
+      lname: fields.lastName,
+      dob: fields.dob,
+      gender: fields.gender,
+      email: fields.email,
+      phone: fields.phone,
+      city: fields.city,
+      gname: fields.guardianName,
+      gphone: fields.guardianPhone,
+      relation: fields.relation,
+      school: fields.schoolName,
+      grade: fields.grade,
+      stream: fields.stream,
+      gradyear: fields.gradYear,
+      source: fields.heardFrom,
+      ailevel: fields.aiLevel,
+      interest: fields.interests,
+      motivation: fields.motivation
+    };
+
+    const response = await fetch('https://script.google.com/macros/s/AKfycbwQvCyV5dBaihwHhQ6SsUowPZ078Es3xRdt9LGuyBXLNjaUf9by3pd594PcPM3wP3tA/exec', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Google Sheet integration returned status ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateStep(4)) return;
@@ -152,27 +190,51 @@ export default function RegisterView() {
     setIsSubmitting(true);
     setErrors([]);
 
-    const refNum = generateRefNum();
-    const payload = {
-      timestamp: new Date().toISOString(),
-      refNo: refNum,
-      ...formData
-    };
-
     try {
-      // Save directly to Firebase Firestore Database
-      await addDoc(collection(db, 'registrations'), payload);
-      
-      // Save to local visualization backup for admin
-      saveLocalBackup(payload);
+      // Collect fields into one object and send via fetch POST request to the GAS URL
+      const data = await submitForm(formData);
 
-      setSubmissionSuccess(refNum);
+      if (data && data.success) {
+        const refNum = data.refNum || generateRefNum();
+        
+        const backupPayload = {
+          timestamp: new Date().toISOString(),
+          refNo: refNum,
+          ...formData
+        };
+
+        // Save directly to Firebase Firestore Database for redundancy
+        try {
+          await addDoc(collection(db, 'registrations'), backupPayload);
+        } catch (dbErr) {
+          console.warn('Firestore redundancy backup skipped:', dbErr);
+        }
+        
+        // Save to local visualization backup for admin
+        saveLocalBackup(backupPayload);
+
+        // On success show a success message with the reference number returned from the sheet
+        setSubmissionSuccess(refNum);
+      } else {
+        throw new Error(data?.error || 'Validation error or unexpected status returned from Google Sheet webhook.');
+      }
     } catch (err: any) {
       console.error('Database Sync Error:', err);
-      // Even if Firestore fails, secure a local copy to prevent data loss
-      saveLocalBackup(payload);
-      setErrors([`Connectivity issue detected. Application cached locally (Ref: ${refNum}). We will sync it once you are back online.`]);
-      setSubmissionSuccess(refNum);
+      
+      // Fallback behavior if direct sync to live Sheets fails, ensuring local backup preservation
+      const offlineRef = generateRefNum();
+      const backupPayload = {
+        timestamp: new Date().toISOString(),
+        refNo: offlineRef,
+        ...formData
+      };
+      saveLocalBackup(backupPayload);
+      
+      // On error show a friendly error message
+      setErrors([
+        `Unable to reach Google Sheets automation directly: ${err.message || err}. However, your student registration was securely captured locally under Reference Code: ${offlineRef}. We will synchronize this with the master register soon.`
+      ]);
+      setSubmissionSuccess(offlineRef);
     } finally {
       setIsSubmitting(false);
     }
