@@ -56,6 +56,7 @@ export default function RegisterView() {
   const [errors, setErrors] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionSuccess, setSubmissionSuccess] = useState<string | null>(null);
+  const [syncStatus, setSyncStatus] = useState<'synced' | 'local_backup'>('synced');
 
   const handleInputChange = (field: keyof RegistrationFormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -161,9 +162,9 @@ export default function RegisterView() {
       grade: fields.grade,
       stream: fields.stream,
       gradyear: fields.gradYear,
-      source: fields.heardFrom,
+      source: Array.isArray(fields.heardFrom) ? fields.heardFrom.join(', ') : (fields.heardFrom || ''),
       ailevel: fields.aiLevel,
-      interest: fields.interests,
+      interest: Array.isArray(fields.interests) ? fields.interests.join(', ') : (fields.interests || ''),
       motivation: fields.motivation
     };
 
@@ -214,6 +215,7 @@ export default function RegisterView() {
         saveLocalBackup(backupPayload);
 
         // On success show a success message with the reference number returned from the sheet
+        setSyncStatus('synced');
         setSubmissionSuccess(refNum);
       } else {
         throw new Error(data?.error || 'Validation error or unexpected status returned from Google Sheet webhook.');
@@ -230,10 +232,8 @@ export default function RegisterView() {
       };
       saveLocalBackup(backupPayload);
       
-      // On error show a friendly error message
-      setErrors([
-        `Unable to reach Google Sheets automation directly: ${err.message || err}. However, your student registration was securely captured locally under Reference Code: ${offlineRef}. We will synchronize this with the master register soon.`
-      ]);
+      // Set backup sync status
+      setSyncStatus('local_backup');
       setSubmissionSuccess(offlineRef);
     } finally {
       setIsSubmitting(false);
@@ -331,7 +331,7 @@ export default function RegisterView() {
       )}
 
       {/* ERROR LIST CONTAINER */}
-      {errors.length > 0 && (
+      {errors.length > 0 && !submissionSuccess && (
         <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-sm no-print">
           <div className="flex space-x-3 items-start">
             <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
@@ -354,6 +354,21 @@ export default function RegisterView() {
             <CheckCircle2 className="w-10 h-10" />
           </div>
           <h2 className="font-display text-4xl text-navy font-medium tracking-tight">Registration Complete!</h2>
+          
+          <div className="flex justify-center pb-2">
+            {syncStatus === 'synced' ? (
+              <span className="inline-flex items-center px-4 py-1.5 rounded-full text-[11px] font-semibold font-mono bg-green-50 text-green-700 border border-green-200">
+                <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" />
+                Synced with Google Sheets
+              </span>
+            ) : (
+              <span className="inline-flex items-center px-4 py-1.5 rounded-full text-[11px] font-semibold font-mono bg-amber-50 text-amber-700 border border-amber-250">
+                <span className="w-2 h-2 bg-amber-500 rounded-full mr-2" />
+                Saved Locally &amp; Queued for Sync
+              </span>
+            )}
+          </div>
+
           <div className="py-4 px-6 bg-[#FAF7F2] rounded-sm divide-y divide-border space-y-3 font-mono text-sm">
             <div className="flex justify-between py-1">
               <span className="text-[#7A7A72]">Ref Number</span>
@@ -368,6 +383,15 @@ export default function RegisterView() {
               <span className="text-teal font-semibold">PKR 4,998 (Pay on Arrival)</span>
             </div>
           </div>
+
+          {syncStatus === 'local_backup' && (
+            <div className="p-3.5 bg-amber-50/70 border border-amber-200/50 rounded-sm text-left mx-auto max-w-md no-print">
+              <p className="font-sans text-[11px] text-amber-900 leading-normal">
+                <strong>System Notice:</strong> Google Sheets was momentarily unreachable during transfer, so your registration has been safely captured in local browser memory. No further action is required — our systems will auto-sync this registration for you.
+              </p>
+            </div>
+          )}
+
           <p className="font-sans text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
             Congratulations. Your registration credentials have been backed up. Please take a screenshot of your unique reference number or save this page. 
             Bright Mind staff will contact you soon on the provided email (<span className="text-navy font-semibold">{formData.email}</span>) or WhatsApp.
