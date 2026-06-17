@@ -20,37 +20,27 @@ const SHEET_NAME = "AI Camp Registrations";
 
 // ── doPost ────────────────────────────────────────────────────────
 function doPost(e) {
-  var headers = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Max-Age": "86400"
-  };
-
   try {
     if (!e || !e.postData || !e.postData.contents) {
       return ContentService.createTextOutput(JSON.stringify({
         success: false,
         error: "Missing or invalid post payload data."
       }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders(headers);
+      .setMimeType(ContentService.MimeType.JSON);
     }
 
     var data = JSON.parse(e.postData.contents);
     var result = saveRegistration(data);
 
     return ContentService.createTextOutput(JSON.stringify(result))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders(headers);
+      .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({ 
       success: false, 
       error: error.toString() 
     }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders(headers);
+    .setMimeType(ContentService.MimeType.JSON);
   }
 }
 
@@ -63,18 +53,6 @@ function doGet(e) {
     camp: "Bright Mind Institute — AI Summer Camp 2026"
   }))
   .setMimeType(ContentService.MimeType.JSON);
-}
-
-// Handle CORS preflight options request
-function doOptions(e) {
-  return ContentService.createTextOutput("")
-    .setMimeType(ContentService.MimeType.TEXT)
-    .setHeaders({
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-      "Access-Control-Max-Age": "86400"
-    });
 }
 
 // ── saveRegistration ──────────────────────────────────────────────
