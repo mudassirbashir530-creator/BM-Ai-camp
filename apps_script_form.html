@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Summer Camp 2026 — Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0e8;
+  --ink: #111118;
+  --red: #d63c1a;
+  --red-light: #fdf0ec;
+  --mid: #888880;
+  --border: #ddd8ce;
+  --white: #ffffff;
+  --success: #1d8a6b;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* HEADER */
+.site-header {
+  background: var(--ink);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+}
+.logo span {
+  color: var(--red);
+}
+.header-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 4px 10px;
+}
+
+/* SEAT BAR */
+.seat-bar {
+  background: #1a1a26;
+  padding: 10px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.seat-bar .s-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.4);
+}
+.seat-dots {
+  display: flex;
+  gap: 4px;
+}
+.sd {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.12);
+}
+.sd.taken {
+  background: var(--red);
+}
+.sd.last {
+  background: #ffb800;
+}
+.seat-bar .s-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,0.55);
+}
+.seat-bar .s-count b {
+  color: #ffb800;
+}
+
+/* HERO */
+.hero {
+  background: var(--red);
+  padding: 40px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: 'REGISTER';
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Playfair Display', serif;
+  font-size: 100px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.06);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 8px;
+  position: relative;
+}
+.hero p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  font-weight: 300;
+  position: relative;
+  max-width: 440px;
+}
+
+/* PROGRESS */
+.progress-wrap {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 18px 32px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.prog-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.prog-sep {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  min-width: 20px;
+}
+.step-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--mid);
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+.prog-step.active .step-circle {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+.prog-step.done .step-circle {
+  background: var(--success);
+  border-color: var(--success);
+  color: #fff;
+}
+.step-lbl {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--mid);
+  white-space: nowrap;
+}
+.prog-step.active .step-lbl {
+  color: var(--ink);
+  font-weight: 600;
+}
+.prog-step.done .step-lbl {
+  color: var(--success);
+}
+@media (max-width:540px) {
+  .step-lbl { display: none; }
+}
+
+/* MAIN */
+.main {
+  max-width: 760px;
+  margin: 32px auto;
+  padding: 0 20px 80px;
+}
+.step-panel {
+  display: none;
+}
+.step-panel.active {
+  display: block;
+}
+
+/* FORM SECTIONS */
+.fsec {
+  background: var(--white);
+  border: 1px solid var(--border);
+  margin-bottom: 18px;
+}
+.fsec-head {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.fsec-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--red);
+  letter-spacing: 1px;
+}
+.fsec-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.fsec-body {
+  padding: 22px 24px;
+}
+
+/* FIELDS */
+.frow {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.frow.two {
+  grid-template-columns: 1fr 1fr;
+}
+.frow.one {
+  grid-template-columns: 1fr;
+}
+@media (max-width:520px) {
+  .frow.two { grid-template-columns: 1fr; }
+}
+.fg {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+label.fl {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+label.fl .req {
+  color: var(--red);
+}
+input[type=text], input[type=email], input[type=tel], input[type=number], select, textarea {
+  width: 100%;
+  padding: 10px 13px;
+  border: 1.5px solid var(--border);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  background: #faf9f6;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--red);
+  background: var(--white);
+}
+input::placeholder, textarea::placeholder {
+  color: var(--mid);
+  font-weight: 300;
+}
+textarea {
+  resize: vertical;
+  min-height: 88px;
+  line-height: 1.6;
+}
+.sel-wrap {
+  position: relative;
+}
+.sel-wrap::after {
+  content: '▾';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--mid);
+  font-size: 13px;
+  pointer-events: none;
+}
+select {
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+/* OPTION BUTTONS */
+.opt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 8px;
+}
+.opt-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  border: 1.5px solid var(--border);
+  background: #faf9f6;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--ink);
+}
+.opt-btn:hover {
+  border-color: var(--red);
+  background: var(--red-light);
+}
+.opt-btn.selected {
+  border-color: var(--red);
+  background: var(--red-light);
+}
+.opt-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.opt-btn.selected .opt-dot {
+  border-color: var(--red);
+  background: var(--red);
+}
+.opt-btn.selected .opt-dot::after {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff;
+}
+.chk-btn .opt-dot {
+  border-radius: 3px;
+}
+.chk-btn.selected .opt-dot::after {
+  content: '✓';
+  width: auto;
+  height: auto;
+  font-size: 8px;
+  font-weight: 700;
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+}
+
+/* INFO BOX */
+.info-box {
+  background: #fdf0ec;
+  border-left: 3px solid var(--red);
+  padding: 13px 16px;
+  margin-bottom: 18px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.info-box b {
+  color: var(--red);
+}
+
+/* REVIEW */
+.rv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width:500px) {
+  .rv-grid { grid-template-columns: 1fr; }
+}
+.rv-item {
+  background: var(--bg);
+  padding: 12px 14px;
+}
+.rv-lbl {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--mid);
+  margin-bottom: 3px;
+}
+.rv-val {
+  font-size: 14px;
+  color: var(--ink);
+}
+
+/* BUTTONS */
+.nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+}
+.btn {
+  padding: 12px 26px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary {
+  background: var(--red);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: #c03418;
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--mid);
+  border: 1.5px solid var(--border);
+}
+.btn-secondary:hover {
+  color: var(--ink);
+  border-color: #999;
+}
+.btn-lg {
+  padding: 15px 36px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ERROR BOX */
+.err-box {
+  background: #fff0f0;
+  border: 1px solid #f5c6c6;
+  padding: 12px 16px;
+  color: #c0392b;
+  font-size: 13px;
+  margin-top: 12px;
+  display: none;
+  border-left: 3px solid var(--red);
+}
+
+/* LOADING */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.9);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+}
+.loading-overlay.show {
+  display: flex;
+}
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.loading-txt {
+  font-size: 14px;
+  color: var(--mid);
+  font-weight: 500;
+}
+
+/* SUCCESS */
+.success-page {
+  display: none;
+  text-align: center;
+  padding: 60px 24px;
+  background: var(--white);
+  border: 1px solid var(--border);
+}
+.success-icon {
+  width: 72px;
+  height: 72px;
+  background: var(--success);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 30px;
+  color: #fff;
+}
+.success-page h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 30px;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+.success-page p {
+  font-size: 14px;
+  color: var(--mid);
+  line-height: 1.7;
+  max-width: 400px;
+  margin: 0 auto 20px;
+}
+.ref-box {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--white);
+  background: var(--ink);
+  border: 1px solid rgba(17,17,24,0.2);
+  display: inline-block;
+  padding: 10px 24px;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+/* CONNECTION ERROR */
+.conn-err {
+  background: #fff0f0;
+  border: 1px solid #f5c6c6;
+  border-left: 4px solid var(--red);
+  padding: 16px 20px;
+  margin-top: 16px;
+  display: none;
+}
+.conn-err h4 {
+  color: var(--red);
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.conn-err p {
+  font-size: 12px;
+  color: var(--mid);
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-txt">Saving your registration...</div>
+</div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="logo"><span>AI</span> Summer Camp 2026</div>
+  <div class="header-tag">Bright Mind Institute</div>
+</header>
+
+<!-- SEAT BAR -->
+<div class="seat-bar">
+  <span class="s-label">Seats</span>
+  <div class="seat-dots">
+    <div class="sd taken"></div><div class="sd taken"></div><div class="sd taken"></div>
+    <div class="sd taken"></div><div class="sd taken"></div><div class="sd taken"></div>
+    <div class="sd taken"></div><div class="sd taken"></div><div class="sd taken"></div>
+    <div class="sd taken"></div><div class="sd taken"></div><div class="sd taken"></div>
+    <div class="sd taken"></div><div class="sd taken"></div><div class="sd taken"></div>
+    <div class="sd last"></div><div class="sd last"></div><div class="sd last"></div>
+    <div class="sd"></div><div class="sd"></div>
+  </div>
+  <span class="s-count">Only <b>5 seats</b> remaining</span>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Student Registration<br>Form</h1>
+  <p>Bright Mind Institute of Education · Fee: PKR 4,999 · Mon–Thu · 2:00 PM – 4:00 PM</p>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="prog-step active" id="prog-1">
+    <div class="step-circle">1</div>
+    <span class="step-lbl">Personal</span>
+  </div>
+  <div class="prog-sep"></div>
+  <div class="prog-step" id="prog-2">
+    <div class="step-circle">2</div>
+    <span class="step-lbl">Education</span>
+  </div>
+  <div class="prog-sep"></div>
+  <div class="prog-step" id="prog-3">
+    <div class="step-circle">3</div>
+    <span class="step-lbl">AI Background</span>
+  </div>
+  <div class="prog-sep"></div>
+  <div class="prog-step" id="prog-4">
+    <div class="step-circle">4</div>
+    <span class="step-lbl">Review</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- STEP 1 -->
+  <div class="step-panel active" id="step-1">
+    <div class="fsec">
+      <div class="fsec-head"><span class="fsec-num">01 —</span><span class="fsec-title">Student Details</span></div>
+      <div class="fsec-body">
+        <div class="frow two">
+          <div class="fg"><label class="fl">First Name <span class="req">*</span></label><input type="text" id="fname" placeholder="Ahmed"></div>
+          <div class="fg"><label class="fl">Last Name <span class="req">*</span></label><input type="text" id="lname" placeholder="Khan"></div>
+        </div>
+        <div class="frow two">
+          <div class="fg"><label class="fl">Date of Birth <span class="req">*</span></label><input type="text" id="dob" placeholder="YYYY-MM-DD"></div>
+          <div class="fg"><label class="fl">Gender <span class="req">*</span></label>
+            <div class="sel-wrap"><select id="gender"><option value="">Select</option><option>Male</option><option>Female</option><option>Prefer not to say</option></select></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fsec">
+      <div class="fsec-head"><span class="fsec-num">02 —</span><span class="fsec-title">Contact Information</span></div>
+      <div class="fsec-body">
+        <div class="frow one">
+          <div class="fg"><label class="fl">Email Address <span class="req">*</span></label><input type="email" id="email" placeholder="student@email.com"></div>
+        </div>
+        <div class="frow two">
+          <div class="fg"><label class="fl">Phone <span class="req">*</span></label><input type="tel" id="phone" placeholder="+92 300 0000000"></div>
+          <div class="fg"><label class="fl">City <span class="req">*</span></label><input type="text" id="city" value="Karachi" placeholder="Karachi"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fsec">
+      <div class="fsec-head"><span class="fsec-num">03 —</span><span class="fsec-title">Parent / Guardian</span></div>
+      <div class="fsec-body">
+        <div class="frow two">
+          <div class="fg"><label class="fl">Guardian Name <span class="req">*</span></label><input type="text" id="gname" placeholder="Full name"></div>
+          <div class="fg"><label class="fl">Guardian Phone <span class="req">*</span></label><input type="tel" id="gphone" placeholder="+92 300 0000000"></div>
+        </div>
+        <div class="frow one">
+          <div class="fg"><label class="fl">Relation</label>
+            <div class="sel-wrap"><select id="relation"><option value="">Select</option><option>Father</option><option>Mother</option><option>Guardian</option><option>Other</option></select></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="err-box" id="err-1">Please fill all required fields before continuing.</div>
+    <div class="nav-row">
+      <div></div>
+      <button type="button" class="btn btn-primary" onclick="nextStep(1)">Continue → Education</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-panel" id="step-2">
+    <div class="fsec">
+      <div class="fsec-head"><span class="fsec-num">04 —</span><span class="fsec-title">Education Details</span></div>
+      <div class="fsec-body">
+        <div class="frow two">
+          <div class="fg"><label class="fl">School / Institution <span class="req">*</span></label><input type="text" id="school" placeholder="School name"></div>
+          <div class="fg"><label class="fl">Current Grade <span class="req">*</span></label>
+            <div class="sel-wrap"><select id="grade">
+              <option value="">Select grade</option>
+              <option>Grade 8</option><option>Grade 9</option>
+              <option>Grade 10 (O-Levels)</option>
+              <option>Grade 11 (A-Levels / FSC 1)</option>
+              <option>Grade 12 (A-Levels / FSC 2)</option>
+              <option>University — Year 1</option>
+              <option>University — Year 2</option>
+              <option>University — Year 3+</option>
+            </select></div>
+          </div>
+        </div>
+        <div class="frow two">
+          <div class="fg"><label class="fl">Academic Stream</label>
+            <div class="sel-wrap"><select id="stream"><option value="">Select</option><option>Science</option><option>Commerce</option><option>Arts / Humanities</option><option>Computer Science</option><option>Engineering</option><option>Other</option></select></div>
+          </div>
+          <div class="fg"><label class="fl">Graduation Year</label><input type="number" id="gradyear" placeholder="e.g. 2026" min="2025" max="2032"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fsec">
+      <div class="fsec-head"><span class="fsec-num">05 —</span><span class="fsec-title">How did you hear about us?</span></div>
+      <div class="fsec-body">
+        <div class="opt-grid">
+          <button type="button" class="opt-btn chk-btn" onclick="toggleOpt(this,'source')"><div class="opt-dot"></div>Social Media</button>
+          <button type="button" class="opt-btn chk-btn" onclick="toggleOpt(this,'source')"><div class="opt-dot"></div>Friend / Family</button>
+          <button type="button" class="opt-btn chk-btn" onclick="toggleOpt(this,'source')"><div class="opt-dot"></div>School Teacher</button>
+          <button type="button" class="opt-btn chk-btn" onclick="toggleOpt(this,'source')"><div class="opt-dot"></div>Flyer / Poster</button>
+          <button type="button" class="opt-btn chk-btn" onclick="toggleOpt(this,'source')"><div class="opt-dot"></div>WhatsApp</button>
+          <button type="button" class="opt-btn chk-btn" onclick="toggleOpt(this,'source')"><div class="opt-dot"></div>Other</button>
+        </div>
+      </div>
+    </div>
+    <div class="err-box" id="err-2">Please enter School name and Grade before continuing.</div>
+    <div class="nav-row">
+      <button type="button" class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+      <button type="button" class="btn btn-primary" onclick="nextStep(2)">Continue → AI Background</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-panel" id="step-3">
+    <div class="fsec">
+      <div class="fsec-head"><span class="fsec-num">06 —</span><span class="fsec-title">Your AI Experience</span></div>
+      <div class="fsec-body">
+        <div class="opt-grid" id="ailevel-grid">
+          <button type="button" class="opt-btn" onclick="selectOpt(this,'ailevel-grid','ailevel')"><div class="opt-dot"></div>Complete Beginner</button>
+          <button type="button" class="opt-btn" onclick="selectOpt(this,'ailevel-grid','ailevel')"><div class="opt-dot"></div>Used ChatGPT a bit</button>
+          <button type="button" class="opt-btn" onclick="selectOpt(this,'ailevel-grid','ailevel')"><div class="opt-dot"></div>Regular AI User</button>
+          <button type="button" class="opt-btn" onclick="selectOpt(this,'ailevel-grid','ailevel')"><div class="opt-dot"></div>Advanced User</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fsec">
+      <div class="fsec-head"><span class="fsec-num">07 —</span><span class="fsec-title">Topics of Interest</span></div>
+      <div class="fsec-body">
+        <div class="opt-grid">
+          <button type="button" class="opt-btn chk-btn" onclick="toggleOpt(this,'interest')"><div class="opt-dot"></div>How AI Thinks</button>
+          <button type="button" class="opt-btn chk-btn" onclick="toggleOpt(this,'interest')"><div class="opt-dot"></div>Prompt Engineering</button>
+          <button type="button" class="opt-btn chk-btn" onclick="toggleOpt(this,'interest')"><div class="opt-dot"></div>AI Automation</button>
+          <button type="button" class="opt-btn chk-btn" onclick="toggleOpt(this,'interest')"><div class="opt-dot"></div>AI Ethics</button>
+          <button type="button" class="opt-btn chk-btn" onclick="toggleOpt(this,'interest')"><div class="opt-dot"></div>AI Careers</button>
+          <button type="button" class="opt-btn chk-btn" onclick="toggleOpt(this,'interest')"><div class="opt-dot"></div>Building Projects</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fsec">
+      <div class="fsec-head"><span class="fsec-num">08 —</span><span class="fsec-title">Why do you want to join?</span></div>
+      <div class="fsec-body">
+        <div class="fg">
+          <label class="fl">Motivation <span class="req">*</span></label>
+          <textarea id="motivation" placeholder="Tell us in 2–3 sentences why you want to join AI Summer Camp..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="err-box" id="err-3">Please select your AI experience level and write your motivation.</div>
+    <div class="nav-row">
+      <button type="button" class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
+      <button type="button" class="btn btn-primary" onclick="nextStep(3)">Continue → Review</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 — REVIEW -->
+  <div class="step-panel" id="step-4">
+    <div class="info-box">Please review carefully. <b>You cannot edit after submitting.</b></div>
+    <div class="fsec">
+      <div class="fsec-head"><span class="fsec-num">Review —</span><span class="fsec-title">Your Application Summary</span></div>
+      <div class="fsec-body">
+        <div class="rv-grid" id="review-grid"></div>
+      </div>
+    </div>
+    <div class="fsec">
+      <div class="fsec-head"><span class="fsec-num">09 —</span><span class="fsec-title">Declaration</span></div>
+      <div class="fsec-body">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button type="button" class="opt-btn chk-btn" id="decl1" onclick="this.classList.toggle('selected')">
+            <div class="opt-dot"></div>
+            <span style="font-size:12px;">I confirm all information provided is accurate and complete.</span>
+          </button>
+          <button type="button" class="opt-btn chk-btn" id="decl2" onclick="this.classList.toggle('selected')">
+            <div class="opt-dot"></div>
+            <span style="font-size:12px;">I agree to abide by the AI Summer Camp 2026 code of conduct.</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="err-box" id="err-4">Please check both declaration boxes before submitting.</div>
+    <div class="conn-err" id="conn-err">
+      <h4>⚠ Connection Error</h4>
+      <p>Could not connect to the server. Please check your internet connection and try again. If the problem continues, contact us on WhatsApp: <b>+92 310 2310119</b></p>
+    </div>
+    <div class="nav-row">
+      <button type="button" class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
+      <button type="button" class="btn btn-primary btn-lg" id="submit-btn" onclick="submitForm()">Submit Application ✓</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-page" id="success-page">
+    <div class="success-icon">✓</div>
+    <h2>Registration Submitted!</h2>
+    <p>Your application has been received and saved. We have automatically emailed you your printable Student ID Card PDF. We will contact you on WhatsApp within 24 hours.<br><br>
+    <b>WhatsApp: +92 310 2310119</b><br>
+    Bright Mind Institute of Education</p>
+    <div class="ref-box" id="ref-num">REF # AISC-2026-0001</div>
+    <p style="margin-top:14px;font-size:12px;color:var(--mid);">Confirmation sent to <b id="conf-email"></b></p>
+  </div>
+
+</div>
+
+<script>
+// ── Google Apps Script Web App Deployment URL ───────────────────────
+// PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE:
+var GAS_URL = "https://script.google.com/macros/s/AKfycbxa8_nL_nr_cBtb1PfqbYnJYgrtXx1G8pQbv3mAZzLdqANO8LpnLfLhOX_Jlzrz5eqU/exec";
+
+// ── Form data object ───────────────────────────────────────────────
+var fd = {
+  fname: '',
+  lname: '',
+  dob: '',
+  gender: '',
+  email: '',
+  phone: '',
+  city: 'Karachi',
+  gname: '',
+  gphone: '',
+  relation: '',
+  school: '',
+  grade: '',
+  stream: '',
+  gradyear: '',
+  source: '',
+  ailevel: '',
+  interest: '',
+  motivation: ''
+};
+
+// ── Navigation ─────────────────────────────────────────────────────
+function goToStep(n) {
+  document.querySelectorAll('.step-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('step-' + n).classList.add('active');
+  for (var i = 1; i <= 4; i++) {
+    var prog = document.getElementById('prog-' + i);
+    prog.classList.remove('active','done');
+    if (i < n) prog.classList.add('done');
+    else if (i === n) prog.classList.add('active');
+  }
+  window.scrollTo(0, 0);
+}
+
+function nextStep(current) {
+  if (current === 1) {
+    fd.fname    = document.getElementById('fname').value.trim();
+    fd.lname    = document.getElementById('lname').value.trim();
+    fd.dob      = document.getElementById('dob').value.trim();
+    fd.gender   = document.getElementById('gender').value;
+    fd.email    = document.getElementById('email').value.trim();
+    fd.phone    = document.getElementById('phone').value.trim();
+    fd.city     = document.getElementById('city').value.trim();
+    fd.gname    = document.getElementById('gname').value.trim();
+    fd.gphone   = document.getElementById('gphone').value.trim();
+    fd.relation = document.getElementById('relation').value;
+    
+    if (!fd.fname || !fd.lname || !fd.dob || !fd.gender || !fd.email || !fd.phone || !fd.city || !fd.gname || !fd.gphone) {
+      document.getElementById('err-1').style.display='block'; 
+      return;
+    }
+    document.getElementById('err-1').style.display='none';
+    goToStep(2);
+
+  } else if (current === 2) {
+    fd.school   = document.getElementById('school').value.trim();
+    fd.grade    = document.getElementById('grade').value;
+    fd.stream   = document.getElementById('stream').value;
+    fd.gradyear = document.getElementById('gradyear').value.trim();
+    
+    if (!fd.school || !fd.grade) {
+      document.getElementById('err-2').style.display='block'; 
+      return;
+    }
+    document.getElementById('err-2').style.display='none';
+    goToStep(3);
+
+  } else if (current === 3) {
+    fd.motivation = document.getElementById('motivation').value.trim();
+    
+    if (!fd.ailevel || !fd.motivation) {
+      document.getElementById('err-3').style.display='block'; 
+      return;
+    }
+    document.getElementById('err-3').style.display='none';
+    buildReview();
+    goToStep(4);
+  }
+}
+
+// ── Option Buttons ─────────────────────────────────────────────────
+function selectOpt(btn, gridId, key) {
+  document.getElementById(gridId).querySelectorAll('.opt-btn').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  fd[key] = btn.textContent.trim();
+}
+
+function toggleOpt(btn, key) {
+  btn.classList.toggle('selected');
+  var vals = [];
+  btn.closest('.opt-grid').querySelectorAll('.opt-btn.selected').forEach(function(b){ vals.push(b.textContent.trim()); });
+  fd[key] = vals.join(', ');
+}
+
+// ── Review Builder ─────────────────────────────────────────────────
+function buildReview() {
+  var items = [
+    {l:'Full Name',    v:(fd.fname||'—')+' '+(fd.lname||'')},
+    {l:'Email',        v:fd.email||'—'},
+    {l:'Phone',        v:fd.phone||'—'},
+    {l:'City',         v:fd.city||'—'},
+    {l:'Date of Birth',v:fd.dob||'—'},
+    {l:'Gender',       v:fd.gender||'—'},
+    {l:'School',       v:fd.school||'—'},
+    {l:'Grade',        v:fd.grade||'—'},
+    {l:'AI Level',     v:fd.ailevel||'—'},
+    {l:'Interests',    v:fd.interest||'—'},
+    {l:'Guardian',     v:(fd.gname||'—')+(fd.relation?' ('+fd.relation+')':'')},
+    {l:'Guardian Phone',v:fd.gphone||'—'},
+  ];
+  document.getElementById('review-grid').innerHTML = items.map(function(i){
+    return '<div class="rv-item"><div class="rv-lbl">'+i.l+'</div><div class="rv-val">'+i.v+'</div></div>';
+  }).join('');
+}
+
+// ── Submit to Google Sheets ────────────────────────────────────────
+function submitForm() {
+  var d1 = document.getElementById('decl1').classList.contains('selected');
+  var d2 = document.getElementById('decl2').classList.contains('selected');
+  if (!d1||!d2) {
+    document.getElementById('err-4').style.display='block'; return;
+  }
+  document.getElementById('err-4').style.display='none';
+  document.getElementById('conn-err').style.display='none';
+  document.getElementById('submit-btn').disabled = true;
+  document.getElementById('loading').classList.add('show');
+
+  // Submit collected data
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'text/plain;charset=utf-8' // avoids preflight OPTIONS blocking in some browsers while delivering standard JSON
+    },
+    body: JSON.stringify(fd)
+  })
+  .then(function(r){ 
+    return r.json(); 
+  })
+  .then(function(result){
+    document.getElementById('loading').classList.remove('show');
+    if (result.success) {
+      // Show success screen
+      document.getElementById('ref-num').textContent = 'REF # ' + result.refNum;
+      document.getElementById('conf-email').textContent = fd.email;
+      document.querySelectorAll('.step-panel').forEach(function(p){ p.style.display='none'; });
+      document.getElementById('success-page').style.display='block';
+      for(var i=1;i<=4;i++){
+        document.getElementById('prog-'+i).classList.remove('active');
+        document.getElementById('prog-'+i).classList.add('done');
+      }
+      window.scrollTo(0, 0);
+    } else {
+      document.getElementById('loading').classList.remove('show');
+      document.getElementById('conn-err').style.display='block';
+      document.getElementById('submit-btn').disabled=false;
+    }
+  })
+  .catch(function(err){
+    console.error('Fetch registration error:', err);
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('conn-err').style.display='block';
+    document.getElementById('submit-btn').disabled=false;
+  });
+}
+</script>
+</body>
+</html>

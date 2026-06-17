@@ -13,7 +13,7 @@ async function startServer() {
   app.post("/api/register", async (req, res) => {
     try {
       const payload = req.body;
-      const gasUrl = 'https://script.google.com/macros/s/AKfycbzsHGBv1x69L9lNqdgcd82AFKeUYzpLO-sPp4wZ3z0sqdLaO3miJE1U2OPSuI5MmTz8/exec';
+      const gasUrl = 'https://script.google.com/macros/s/AKfycbxa8_nL_nr_cBtb1PfqbYnJYgrtXx1G8pQbv3mAZzLdqANO8LpnLfLhOX_Jlzrz5eqU/exec';
 
       console.log('Proxying registration request to Google Apps Script...');
       const response = await fetch(gasUrl, {
