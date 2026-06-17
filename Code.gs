@@ -7,7 +7,11 @@
  * Instructions:
  * 1. Open Google Apps Script (https://script.google.com/) for your Google Sheet.
  * 2. Paste this entire file into Code.gs.
- * 3. Deploy it as a Web App:
+ * 3. ⚠️ IMPORTANT: AUTHORIZE THE EMAIL SERVICE FIRST!
+ *    - In the toolbar at the top of the editor, click the function dropdown and select "authorizeScript".
+ *    - Click the "Run" button.
+ *    - Click "Review permissions" when requested, choose your account, click "Advanced" -> "Go to Untitled project (unsafe)", and click "Allow".
+ * 4. Deploy it as a Web App:
  *    - Click "Deploy" -> "New deployment"
  *    - Select type: "Web app"
  *    - Set "Execute as": "Me" (your account)
@@ -17,6 +21,25 @@
 
 const SHEET_ID   = "1xacbHXJRDUVkhJ8sCL0J8t4_8j23jzD-R2YngDwK5sQ";
 const SHEET_NAME = "AI Camp Registrations";
+
+// ── Run this once in the Script Editor to authorize the Gmail/Email service ──
+function authorizeScript() {
+  var testEmail = Session.getActiveUser().getEmail();
+  if (testEmail) {
+    try {
+      GmailApp.sendEmail(
+        testEmail, 
+        "Authorization Active", 
+        "Congratulations! Your Google Apps Script is now successfully authorized to send emails for the AI Summer Camp 2026."
+      );
+      Logger.log("✅ Authorization email sent successfully to: " + testEmail);
+    } catch (err) {
+      Logger.log("❌ Authorization Error: " + err.toString());
+    }
+  } else {
+    Logger.log("Could not retrieve active user email.");
+  }
+}
 
 // ── doPost ────────────────────────────────────────────────────────
 function doPost(e) {
@@ -57,7 +80,21 @@ function doGet(e) {
 
 // ── saveRegistration ──────────────────────────────────────────────
 function saveRegistration(data) {
-  var ss    = SpreadsheetApp.openById(SHEET_ID);
+  var ss;
+  try {
+    ss = SpreadsheetApp.getActiveSpreadsheet();
+  } catch (err) {
+    Logger.log("getActiveSpreadsheet failed: " + err.toString());
+  }
+
+  if (!ss) {
+    try {
+      ss = SpreadsheetApp.openById(SHEET_ID);
+    } catch (err) {
+      throw new Error("Could not access Google Spreadsheet. Please verify your SHEET_ID or make sure this script is bound to the sheet: " + err.toString());
+    }
+  }
+
   var sheet = ss.getSheetByName(SHEET_NAME);
 
   // Column Headers mapping for sheet creation
@@ -169,17 +206,23 @@ function saveRegistration(data) {
     .setHorizontalAlignment("center");
 
   // Try sending the automatic email with PDF attachment
+  var emailSent = false;
+  var emailError = "";
   if (data.email) {
     try {
       sendEmailWithIDCard(data, refNum, fullName);
-    } catch (emailError) {
-      Logger.log("Failed to send confirmation email: " + emailError.toString());
+      emailSent = true;
+    } catch (err) {
+      emailError = err.toString();
+      Logger.log("Failed to send confirmation email: " + emailError);
     }
   }
 
   return {
     success: true,
     refNum:  refNum,
+    emailSent: emailSent,
+    emailError: emailError,
     message: "Registration saved successfully!"
   };
 }
@@ -279,9 +322,15 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '</body>' +
     '</html>';
 
-  // Render HTML segment dynamically as PDF output stream
-  var htmlOutput = HtmlService.createHtmlOutput(idCardHtml);
-  var pdfBlob = htmlOutput.getAs('application/pdf').setName("Student_ID_Card_" + refNum + ".pdf");
+  var attachmentsList = [];
+  try {
+    // Render HTML segment dynamically as PDF output stream
+    var htmlOutput = HtmlService.createHtmlOutput(idCardHtml);
+    var pdfBlob = htmlOutput.getAs('application/pdf').setName("Student_ID_Card_" + refNum + ".pdf");
+    attachmentsList.push(pdfBlob);
+  } catch (pdfErr) {
+    Logger.log("Failed to compile HTML ID card to PDF: " + pdfErr.toString());
+  }
 
   // ── 2. Create Email HTML Body ──
   // A beautiful invitation box matching the corporate branding of Bright Mind
@@ -311,7 +360,7 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '              <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #7A7A72; font-weight: bold; margin-bottom: 4px;">Student Reference Code</div>' +
     '              <div style="font-family: monospace; font-size: 20px; font-weight: bold; color: #0E1C35; letter-spacing: 1px;">' + refNum + '</div>' +
     '              <div style="margin-top: 10px; font-size: 12.5px; color: #555555;">' +
-    '                <strong>Fee Structure:</strong> PKR 4,999 (Flat program fee, payable on your-arrival).<br>' +
+    '                <strong>Fee Structure:</strong> PKR 4,999 (Flat program fee, payable on your arrival).<br>' +
     '                <strong>Schedule:</strong> Mon–Thu · 2:00 PM – 4:00 PM' +
     '              </div>' +
     '            </td>' +
@@ -352,14 +401,18 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '</body>' +
     '</html>';
 
-  // Send email with PDF attachment
+  // Send email with PDF attachment if successfully built
+  var emailOptions = {
+    htmlBody: emailBodyHtml
+  };
+  if (attachmentsList.length > 0) {
+    emailOptions.attachments = attachmentsList;
+  }
+
   GmailApp.sendEmail(
     studentEmail, 
     "AI Summer Camp 2026 — Registration Confirmed! (ID Card Assigned)", 
-    "Hello " + studentName + ",\n\nYour registration has been securely received! Your Reference Code is: " + refNum + ". Please find your printable PDF Student ID Card attached.\n\nBright Mind Institute of Education", 
-    {
-      htmlBody: emailBodyHtml,
-      attachments: [pdfBlob]
-    }
+    "Hello " + studentName + ",\n\nYour registration has been securely received! Your Reference Code is: " + refNum + ".\n\nBright Mind Institute of Education", 
+    emailOptions
   );
 }
