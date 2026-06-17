@@ -7,7 +7,7 @@
  * Instructions:
  * 1. Open Google Apps Script (https://script.google.com/) for your Google Sheet.
  * 2. Paste this entire file into Code.gs.
- * 3. ⚠️ IMPORTANT: AUTHORIZE THE EMAIL SERVICE FIRST!
+ * 3. [CRITICAL] IMPORTANT: AUTHORIZE THE EMAIL SERVICE FIRST!
  *    - In the toolbar at the top of the editor, click the function dropdown and select "authorizeScript".
  *    - Click the "Run" button.
  *    - Click "Review permissions" when requested, choose your account, click "Advanced" -> "Go to Untitled project (unsafe)", and click "Allow".
@@ -32,9 +32,9 @@ function authorizeScript() {
         "Authorization Active", 
         "Congratulations! Your Google Apps Script is now successfully authorized to send emails for the AI Summer Camp 2026."
       );
-      Logger.log("✅ Authorization email sent successfully to: " + testEmail);
+      Logger.log("[SUCCESS] Authorization email sent successfully to: " + testEmail);
     } catch (err) {
-      Logger.log("❌ Authorization Error: " + err.toString());
+      Logger.log("[ERROR] Authorization Error: " + err.toString());
     }
   } else {
     Logger.log("Could not retrieve active user email.");
@@ -70,7 +70,7 @@ function doPost(e) {
 // ── doGet — Test URL in browser ───────────────────────────────────
 function doGet(e) {
   return ContentService.createTextOutput(JSON.stringify({
-    status: "✅ Script is LIVE and Ready!",
+    status: "[OK] Script is LIVE and Ready!",
     sheetId: SHEET_ID,
     sheetName: SHEET_NAME,
     camp: "Bright Mind Institute — AI Summer Camp 2026"
@@ -304,10 +304,10 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '        <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">' +
     '          <tr>' +
     '            <td style="text-align: left; opacity: 0.85; color: #ffffff;">' +
-    '              📍 Manzoor Colony, Karachi, Pakistan' +
+    '              &#128205; Manzoor Colony, Karachi, Pakistan' +
     '            </td>' +
     '            <td style="text-align: right; opacity: 0.85; font-weight: bold; color: #ffffff;">' +
-    '              📞 +92 310 2310119' +
+    '              &#128222; +92 310 2310119' +
     '            </td>' +
     '          </tr>' +
     '          <tr>' +
@@ -349,7 +349,7 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '    <!-- Welcome Content -->' +
     '    <tr>' +
     '      <td style="padding: 30px; line-height: 1.6; font-size: 15px; color: #333333;">' +
-    '        <h2 style="color: #0E1C35; font-size: 22px; margin-top: 0; font-weight: bold; border-bottom: 2px solid #FAF7F2; padding-bottom: 12px;">Registration Confirmed! 🎉</h2>' +
+    '        <h2 style="color: #0E1C35; font-size: 22px; margin-top: 0; font-weight: bold; border-bottom: 2px solid #FAF7F2; padding-bottom: 12px;">Registration Confirmed! &#127881;</h2>' +
     '        <p>Dear <strong>' + studentName + '</strong>,</p>' +
     '        <p>Congratulations! We have successfully received your enrollment application for the upcoming <strong>AI Summer Camp 2026</strong> at the Bright Mind Institute of Education.</p>' +
     '        ' +
@@ -361,7 +361,7 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '              <div style="font-family: monospace; font-size: 20px; font-weight: bold; color: #0E1C35; letter-spacing: 1px;">' + refNum + '</div>' +
     '              <div style="margin-top: 10px; font-size: 12.5px; color: #555555;">' +
     '                <strong>Fee Structure:</strong> PKR 4,999 (Flat program fee, payable on your arrival).<br>' +
-    '                <strong>Schedule:</strong> Mon–Thu · 2:00 PM – 4:00 PM' +
+    '                <strong>Schedule:</strong> Mon–Thu | 2:00 PM – 4:00 PM' +
     '              </div>' +
     '            </td>' +
     '          </tr>' +
@@ -373,10 +373,10 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '        <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; border: 1px solid #FAF7F2; background-color: #ffffff; padding: 15px; margin: 15px 0; border-radius: 6px;">' +
     '          <tr>' +
     '            <td>' +
-    '              <strong>🏫 Institute Venue:</strong><br>' +
+    '              <strong>&#127971; Institute Venue:</strong><br>' +
     '              Bright Mind Institute, Manzoor Colony, Karachi, Pakistan<br>' +
-    '              <strong>💬 Official Support (WhatsApp):</strong> +92 310 2310119<br>' +
-    '              <strong>📧 Email Contact:</strong> brightmindinstituteofeducation@gmail.com' +
+    '              <strong>&#128172; Official Support (WhatsApp):</strong> +92 310 2310119<br>' +
+    '              <strong>&#9993; Email Contact:</strong> brightmindinstituteofeducation@gmail.com' +
     '            </td>' +
     '          </tr>' +
     '        </table>' +
