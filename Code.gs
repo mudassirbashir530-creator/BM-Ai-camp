@@ -43,8 +43,10 @@ function authorizeScript() {
 
 // ── doPost ────────────────────────────────────────────────────────
 function doPost(e) {
+  console.log("doPost triggered");
   try {
     if (!e || !e.postData || !e.postData.contents) {
+      console.error("doPost missing payload", JSON.stringify(e));
       return ContentService.createTextOutput(JSON.stringify({
         success: false,
         error: "Missing or invalid post payload data."
@@ -53,12 +55,15 @@ function doPost(e) {
     }
 
     var data = JSON.parse(e.postData.contents);
+    console.log("Parsed request data:", data);
     var result = saveRegistration(data);
 
+    console.log("doPost returning success", result);
     return ContentService.createTextOutput(JSON.stringify(result))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
+    console.error("doPost fatal error:", error.toString());
     return ContentService.createTextOutput(JSON.stringify({ 
       success: false, 
       error: error.toString() 
@@ -69,6 +74,7 @@ function doPost(e) {
 
 // ── doGet — Test URL in browser ───────────────────────────────────
 function doGet(e) {
+  console.log("doGet triggered");
   return ContentService.createTextOutput(JSON.stringify({
     status: "[OK] Script is LIVE and Ready!",
     sheetId: SHEET_ID,
@@ -80,10 +86,12 @@ function doGet(e) {
 
 // ── saveRegistration ──────────────────────────────────────────────
 function saveRegistration(data) {
+  console.log("saveRegistration started");
   var ss;
   try {
     ss = SpreadsheetApp.getActiveSpreadsheet();
   } catch (err) {
+    console.warn("getActiveSpreadsheet failed: " + err.toString());
     Logger.log("getActiveSpreadsheet failed: " + err.toString());
   }
 
@@ -91,6 +99,7 @@ function saveRegistration(data) {
     try {
       ss = SpreadsheetApp.openById(SHEET_ID);
     } catch (err) {
+      console.error("Could not access Google Spreadsheet: " + err.toString());
       throw new Error("Could not access Google Spreadsheet. Please verify your SHEET_ID or make sure this script is bound to the sheet: " + err.toString());
     }
   }
@@ -209,15 +218,21 @@ function saveRegistration(data) {
   var emailSent = false;
   var emailError = "";
   if (data.email) {
+    console.log("Attempting to send email to:", data.email);
     try {
       sendEmailWithIDCard(data, refNum, fullName);
       emailSent = true;
+      console.log("Email successfully sent to:", data.email);
     } catch (err) {
       emailError = err.toString();
+      console.error("Failed to send confirmation email:", emailError);
       Logger.log("Failed to send confirmation email: " + emailError);
     }
+  } else {
+    console.log("No email provided in data payload. Skipping email logic.");
   }
 
+  console.log("saveRegistration returning success. Ref:", refNum);
   return {
     success: true,
     refNum:  refNum,
@@ -229,6 +244,7 @@ function saveRegistration(data) {
 
 // ── sendEmailWithIDCard ───────────────────────────────────────────
 function sendEmailWithIDCard(data, refNum, fullName) {
+  console.log("sendEmailWithIDCard started for:", data.email);
   var studentEmail = data.email.trim();
   var studentName  = fullName;
   var grade        = data.grade || "Student";
@@ -428,10 +444,50 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     emailOptions.attachments = attachmentsList;
   }
 
+  console.log("Calling GmailApp.sendEmail...");
   GmailApp.sendEmail(
     studentEmail, 
     "AI Summer Camp 2026 Registration Confirmation", 
     plainTextBody, 
     emailOptions
   );
+  console.log("GmailApp.sendEmail completed.");
+}
+
+// ── TEST FUNCTIONS (Run directly from Apps Script Editor) ──────────
+
+function TEST_saveOnly() {
+  Logger.log("Starting TEST_saveOnly...");
+  var fakeData = {
+    fname: "Test",
+    lname: "User",
+    email: "test_save@example.com",
+    phone: "123456789",
+    grade: "Grade 10"
+  };
+  try {
+    var result = saveRegistration(fakeData);
+    Logger.log("Saved successfully. Result: " + JSON.stringify(result));
+  } catch (err) {
+    Logger.log("TEST_saveOnly ERROR: " + err.toString());
+  }
+}
+
+function TEST_emailOnly() {
+  Logger.log("Starting TEST_emailOnly...");
+  // Replace this email with your own testing email address
+  var yourTestingEmail = Session.getActiveUser().getEmail(); 
+  if (!yourTestingEmail) yourTestingEmail = "test@example.com";
+  
+  var fakeData = {
+    email: yourTestingEmail,
+    grade: "Grade 10",
+    city: "Karachi"
+  };
+  try {
+    sendEmailWithIDCard(fakeData, "AISC-TEST-0000", "Test Student");
+    Logger.log("Email sent successfully to " + yourTestingEmail);
+  } catch (err) {
+    Logger.log("TEST_emailOnly ERROR: " + err.toString());
+  }
 }
