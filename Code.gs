@@ -394,12 +394,31 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '    <!-- Minimal Footer -->' +
     '    <tr style="background-color: #111118; text-align: center; color: #888880; font-size: 11px;">' +
     '      <td style="padding: 15px;">' +
-    '        &copy; 2026 Bright Mind Institute. All Rights Reserved. ' +
+    '        &copy; 2026 Bright Mind Institute. All Rights Reserved.<br>' +
+    '        Bright Mind Institute, Manzoor Colony, Karachi, Pakistan<br><br>' +
+    '        If you did not initiate this registration, please disregard this email.' +
     '      </td>' +
     '    </tr>' +
     '  </table>' +
     '</body>' +
     '</html>';
+
+  // Plain-text Fallback
+  var plainTextBody = 
+    "Dear " + studentName + ",\n\n" +
+    "Your registration for the AI Summer Camp 2026 has been confirmed.\n\n" +
+    "Student Reference Code: " + refNum + "\n" +
+    "Fee Structure: PKR 4,999 (Flat program fee, payable on your arrival).\n" +
+    "Schedule: Mon-Thu, 2:00 PM - 4:00 PM\n\n" +
+    "Your Student ID Card is attached as a PDF document. Please print it and bring it with you.\n\n" +
+    "Institute Venue:\n" +
+    "Bright Mind Institute, Manzoor Colony, Karachi, Pakistan\n" +
+    "WhatsApp Support: +92 310 2310119\n" +
+    "Email: brightmindinstituteofeducation@gmail.com\n\n" +
+    "Warm Regards,\nRegistrar Operations\nBright Mind Institute of Education\n\n" +
+    "---\n" +
+    "Physical Address: Bright Mind Institute, Manzoor Colony, Karachi, Pakistan\n" +
+    "If you didn't request this registration, please ignore this email.";
 
   // Send email with PDF attachment if successfully built
   var emailOptions = {
@@ -411,8 +430,8 @@ function sendEmailWithIDCard(data, refNum, fullName) {
 
   GmailApp.sendEmail(
     studentEmail, 
-    "AI Summer Camp 2026 — Registration Confirmed! (ID Card Assigned)", 
-    "Hello " + studentName + ",\n\nYour registration has been securely received! Your Reference Code is: " + refNum + ".\n\nBright Mind Institute of Education", 
+    "AI Summer Camp 2026 Registration Confirmation", 
+    plainTextBody, 
     emailOptions
   );
 }
