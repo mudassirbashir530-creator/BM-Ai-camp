@@ -282,7 +282,7 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '    }' +
     '    .print-sheet {' +
     '      width: 100%;' +
-    '      max-width: 700px;' +
+    '      max-width: 1040px;' +
     '      margin: 0 auto;' +
     '      box-sizing: border-box;' +
     '    }' +
@@ -300,12 +300,17 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '      border-collapse: collapse;' +
     '      table-layout: fixed;' +
     '    }' +
+    '    .card-column {' +
+    '      width: 50%;' +
+    '      vertical-align: top;' +
+    '      text-align: center;' +
+    '    }' +
     '    .card-container {' +
-    '      width: 320px;' +
-    '      height: 500px;' +
+    '      width: 480px;' +
+    '      min-height: 300px;' +
     '      background-color: #FAF7F2;' +
     '      border: 3px solid #0E1C35;' +
-    '      border-radius: 16px;' +
+    '      border-radius: 18px;' +
     '      position: relative;' +
     '      overflow: hidden;' +
     '      box-sizing: border-box;' +
@@ -313,16 +318,76 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '      text-align: left;' +
     '    }' +
     '    .back-card-container {' +
-    '      width: 320px;' +
-    '      height: 500px;' +
+    '      width: 480px;' +
+    '      min-height: 300px;' +
     '      background-color: #0E1C35;' +
     '      border: 3px solid #E05C1A;' +
-    '      border-radius: 16px;' +
+    '      border-radius: 18px;' +
     '      position: relative;' +
     '      overflow: hidden;' +
     '      box-sizing: border-box;' +
     '      margin: 0 auto;' +
     '      text-align: left;' +
+    '    }' +
+    '    .header-band {' +
+    '      height: 90px;' +
+    '      background-color: #0E1C35;' +
+    '      display: flex;' +
+    '      align-items: center;' +
+    '      justify-content: space-between;' +
+    '      padding: 0 24px;' +
+    '      position: relative;' +
+    '      box-sizing: border-box;' +
+    '    }' +
+    '    .header-accent {' +
+    '      position: absolute;' +
+    '      bottom: 0;' +
+    '      left: 0;' +
+    '      width: 100%;' +
+    '      height: 4px;' +
+    '      background-color: #E05C1A;' +
+    '    }' +
+    '    .logo-badge {' +
+    '      width: 56px;' +
+    '      height: 56px;' +
+    '      background-color: #ffffff;' +
+    '      border-radius: 50%;' +
+    '      box-shadow: 0 2px 6px rgba(0,0,0,0.15);' +
+    '      display: flex;' +
+    '      align-items: center;' +
+    '      justify-content: center;' +
+    '      box-sizing: border-box;' +
+    '    }' +
+    '    .body-section {' +
+    '      display: flex;' +
+    '      flex-direction: row;' +
+    '      gap: 20px;' +
+    '      padding: 26px 24px 22px 24px;' +
+    '      box-sizing: border-box;' +
+    '    }' +
+    '    .photo-circle {' +
+    '      width: 92px;' +
+    '      height: 92px;' +
+    '      min-width: 92px;' +
+    '      border-radius: 50%;' +
+    '      border: 3px solid #E05C1A;' +
+    '      background-color: #ffffff;' +
+    '      box-sizing: border-box;' +
+    '      display: flex;' +
+    '      align-items: center;' +
+    '      justify-content: center;' +
+    '      text-align: center;' +
+    '      padding: 4px;' +
+    '    }' +
+    '    .details-column {' +
+    '      flex-grow: 1;' +
+    '    }' +
+    '    .footer-band {' +
+    '      margin-top: 20px;' +
+    '      background-color: #0E1C35;' +
+    '      padding: 14px 24px;' +
+    '      text-align: center;' +
+    '      box-sizing: border-box;' +
     '    }' +
     '  </style>' +
     '</head>' +
@@ -356,134 +421,64 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '          <div style="font-family: sans-serif; font-size: 9.5px; font-weight: bold; color: #7A7A72; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.8px;">▼ Front Side (Cut Border)</div>' +
     '          ' +
     '          <div class="card-container">' +
-    '            <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%; border-collapse: collapse;">' +
+    '            ' +
+    '            <!-- Front Header Band (90px height, navy #0E1C35, flex, padding 24px, 4px orange bottom strip) -->' +
+    '            <div class="header-band">' +
+    '              <!-- Logo Badge (56px diameter white circle, centered image object-fit contain, image 70% of circle) -->' +
+    '              <div class="logo-badge">' +
+    '                <img src="' + logoUrl + '" style="width: 38px; height: 38px; object-fit: contain; display: block;" alt="Brightmind Logo" />' +
+    '              </div>' +
     '              ' +
-    '              <!-- White Header Banner for Clear Silhouette Logo Rendering -->' +
-    '              <tr>' +
-    '                <td style="height: 75px; background-color: #ffffff; text-align: center; vertical-align: middle; padding: 10px 0;">' +
-    '                  <img src="' + logoUrl + '" style="height: 48px; border: 0; display: block; margin: 0 auto;" alt="BMIE" />' +
-    '                </td>' +
-    '              </tr>' +
+    '              <!-- Card-tag -->' +
+    '              <div class="card-tag" style="text-align: right;">' +
+    '                <div style="font-size: 13px; font-weight: bold; color: #ffffff; text-transform: uppercase; font-family: sans-serif; letter-spacing: 0.5px; margin-bottom: 3px;">STUDENT ID</div>' +
+    '                <div style="display: inline-block; background-color: rgba(255,255,255,0.25); padding: 2px 8px; border-radius: 12px; font-size: 9px; font-weight: bold; color: #ffffff; text-transform: uppercase; font-family: sans-serif; letter-spacing: 0.5px;">2026 COHORT</div>' +
+    '              </div>' +
     '              ' +
-    '              <!-- Parallel Corporate Diagonal Accent Stripes -->' +
-    '              <tr>' +
-    '                <td style="height: 35px; padding: 0; margin: 0; vertical-align: top;">' +
-    '                  <svg width="320" height="35" viewBox="0 0 320 35" fill="none" style="display: block; margin: 0; padding: 0;">' +
-    '                    <path d="M0 0 L320 10 V25 L0 15 Z" fill="#0E1C35"/>' +
-    '                    <path d="M0 15 L320 25 V31 L0 20 Z" fill="#E05C1A"/>' +
-    '                  </svg>' +
-    '                </td>' +
-    '              </tr>' +
+    '              <div class="header-accent"></div>' +
+    '            </div>' +
+    '            ' +
+    '            <!-- Body Section (flex row, no fixed height, gap 20px, padding: 26px 24px 22px 24px) -->' +
+    '            <div class="body-section">' +
     '              ' +
-    '              <!-- Core Identity Matrix Details Space -->' +
-    '              <tr>' +
-    '                <td style="vertical-align: top; padding: 12px 16px 12px 16px;">' +
-    '                  <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">' +
-    '                    <tr>' +
-    '                      <!-- Picture Area Frame On Left -->' +
-    '                      <td style="width: 100px; vertical-align: top; text-align: center;">' +
-    '                        <table border="0" cellpadding="0" cellspacing="0" style="width: 90px; height: 95px; margin: 0 auto;">' +
-    '                          <tr>' +
-    '                            <td style="border: 2px dashed #E05C1A; border-radius: 8px; background-color: #ffffff; text-align: center; vertical-align: middle; padding: 6px;">' +
-    '                              <div style="font-size: 8px; font-weight: bold; line-height: 12px; color: #0E1C35; font-family: sans-serif; text-transform: uppercase;">' +
-    '                                PASTE<br/>PHOTO<br/>HERE' +
-    '                              </div>' +
-    '                            </td>' +
-    '                          </tr>' +
-    '                        </table>' +
-    '                        <div style="margin-top: 15px; text-align: center;">' +
-    '                          <span style="background-color: #0E1C35; color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 8px; font-weight: bold; text-transform: uppercase; font-family: sans-serif; display: inline-block; letter-spacing: 0.5px;">' +
-    '                            CAMP COHORT' +
-    '                          </span>' +
-    '                        </div>' +
-    '                      </td>' +
-    '                      ' +
-    '                      <!-- Student Metadata Matrix On Right -->' +
-    '                      <td style="padding-left: 14px; vertical-align: top;">' +
-    '                        <!-- Student Full Name -->' +
-    '                        <div style="font-size: 18px; font-weight: bold; color: #0E1C35; margin-bottom: 1px; text-transform: capitalize; font-family: sans-serif; letter-spacing: -0.3px; line-height: 1.2;">' +
-    '                          ' + studentName + '' +
-    '                        </div>' +
-    '                        <!-- Program Label -->' +
-    '                        <div style="font-size: 9px; font-weight: bold; color: #E05C1A; margin-bottom: 12px; text-transform: uppercase; font-family: sans-serif; letter-spacing: 0.8px;">' +
-    '                          AI SUMMER CAMP 2026' +
-    '                        </div>' +
-    '                        ' +
-    '                        <!-- Structured Fields -->' +
-    '                        <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; font-size: 11px; font-family: sans-serif; color: #0E1C35;">' +
-    '                          <tr>' +
-    '                            <td style="padding: 3px 0; color: #7A7A72; font-weight: bold; width: 64px;">Student ID:</td>' +
-    '                            <td style="padding: 3px 0; color: #E05C1A; font-weight: bold; font-family: monospace; font-size: 12px;">' + refNum + '</td>' +
-    '                          </tr>' +
-    '                          <tr>' +
-    '                            <td style="padding: 3px 0; color: #7A7A72; font-weight: bold;">Grade:</td>' +
-    '                            <td style="padding: 3px 0; font-weight: bold;">' + grade + '</td>' +
-    '                          </tr>' +
-    '                          <tr>' +
-    '                            <td style="padding: 3px 0; color: #7A7A72; font-weight: bold;">City:</td>' +
-    '                            <td style="padding: 3px 0; font-weight: bold;">' + city + '</td>' +
-    '                          </tr>' +
-    '                          <tr>' +
-    '                            <td style="padding: 3px 0; color: #7A7A72; font-weight: bold;">Date Issued:</td>' +
-    '                            <td style="padding: 3px 0; font-weight: bold;">June 2026</td>' +
-    '                          </tr>' +
-    '                        </table>' +
-    '                      </td>' +
-    '                    </tr>' +
-    '                  </table>' +
-    '                  ' +
-    '                  <!-- Bottom Authentication Stamp & Barcode Block (Fills empty vertical space elegantly) -->' +
-    '                  <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 22px; border-top: 1px solid rgba(14,28,53,0.1); padding-top: 10px;">' +
-    '                    <tr>' +
-    '                      <td style="vertical-align: middle;">' +
-    '                        <div style="font-size: 7.5px; font-weight: bold; color: #7A7A72; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 2px;">Authorized Signature</div>' +
-    '                        <div style="height: 25px; border-bottom: 1px dashed #0E1C35; margin-right: 15px; text-align: center; vertical-align: bottom; font-family: monospace; font-size: 8.5px; color: #b1a99d; padding-top: 8px; font-weight: bold;">OFFICE STAMP</div>' +
-    '                      </td>' +
-    '                      <td style="width: 80px; text-align: right; vertical-align: middle;">' +
-    '                        <div style="font-family: monospace; font-size: 6.5px; color: #7A7A72; text-align: center; margin-bottom: 2px; text-transform: uppercase;">SECURE VERIFIED</div>' +
-    '                        <!-- Precision Barcode Simulation -->' +
-    '                        <table border="0" cellpadding="0" cellspacing="1" style="width: 76px; height: 18px; background-color: #0E1C35; margin: 0 auto; border-collapse: collapse;">' +
-    '                          <tr>' +
-    '                            <td style="background-color:#ffffff; width:3px;"></td>' +
-    '                            <td style="background-color:#0E1C35; width:2px;"></td>' +
-    '                            <td style="background-color:#ffffff; width:1px;"></td>' +
-    '                            <td style="background-color:#0E1C35; width:3px;"></td>' +
-    '                            <td style="background-color:#ffffff; width:2px;"></td>' +
-    '                            <td style="background-color:#0E1C35; width:1px;"></td>' +
-    '                            <td style="background-color:#ffffff; width:3px;"></td>' +
-    '                            <td style="background-color:#0E1C35; width:2px;"></td>' +
-    '                            <td style="background-color:#ffffff; width:1px;"></td>' +
-    '                            <td style="background-color:#0E1C35; width:2px;"></td>' +
-    '                            <td style="background-color:#ffffff; width:3px;"></td>' +
-    '                            <td style="background-color:#0E1C35; width:1px;"></td>' +
-    '                            <td style="background-color:#ffffff; width:2px;"></td>' +
-    '                          </tr>' +
-    '                        </table>' +
-    '                        <div style="font-family: monospace; font-size: 7px; color: #0E1C35; text-align: center; margin-top: 2px; font-weight: bold;">*AISC-' + refNum.substring(refNum.length - 4) + '*</div>' +
-    '                      </td>' +
-    '                    </tr>' +
-    '                  </table>' +
-    '                </td>' +
-    '              </tr>' +
+    '              <!-- Photo Circle (92px, white bg, 3px solid orange border, centered placeholder) -->' +
+    '              <div class="photo-circle" style="margin-right: 20px;">' +
+    '                <div style="font-size: 8px; font-weight: bold; line-height: 11px; color: #7A7A72; font-family: sans-serif; text-transform: uppercase;">PASTE<br/>PHOTO<br/>HERE</div>' +
+    '              </div>' +
     '              ' +
-    '              <!-- Premium Deep Blue Footer Band -->' +
-    '              <tr>' +
-    '                <td style="height: 52px; background-color: #0E1C35; vertical-align: middle; text-align: center; padding: 4px 10px;">' +
-    '                  <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">' +
-    '                    <tr>' +
-    '                      <td style="text-align: center; color: #ffffff; font-family: sans-serif; font-weight: bold; font-size: 8.5px; letter-spacing: 0.6px; text-transform: uppercase; padding-bottom: 1px;">' +
-    '                        BRIGHT MIND INSTITUTE OF EDUCATION' +
-    '                      </td>' +
-    '                    </tr>' +
-    '                    <tr>' +
-    '                      <td style="text-align: center; color: #E05C1A; font-family: sans-serif; font-size: 7.5px; font-weight: bold;">' +
-    '                        Address: Manzoor Colony, Karachi, Pak &nbsp;|&nbsp; Support: +92 310 2310119' +
-    '                      </td>' +
-    '                    </tr>' +
-    '                  </table>' +
-    '                </td>' +
-    '              </tr>' +
-    '            </table>' +
+    '              <!-- Student Details Column -->' +
+    '              <div class="details-column">' +
+    '                <div style="font-size: 22px; font-weight: bold; color: #0E1C35; margin-bottom: 4px; text-transform: capitalize; font-family: sans-serif; line-height: 1.2;">' + studentName + '</div>' +
+    '                <div style="font-size: 11px; font-weight: bold; color: #E05C1A; margin-bottom: 14px; text-transform: uppercase; font-family: sans-serif; letter-spacing: 0.8px;">AI SUMMER CAMP 2026</div>' +
+    '                ' +
+    '                <div style="display: flex; flex-direction: column; gap: 8px;">' +
+    '                  <div style="display: flex; align-items: center; margin-bottom: 8px;">' +
+    '                    <span style="font-size: 9.5px; font-weight: bold; color: #7A7A72; display: inline-block; width: 60px; text-transform: uppercase; font-family: sans-serif;">STUDENT ID:</span>' +
+    '                    <span style="font-size: 13.5px; font-weight: bold; color: #E05C1A; font-family: monospace; line-height: 1;">' + refNum + '</span>' +
+    '                  </div>' +
+    '                  <div style="display: flex; align-items: center; margin-bottom: 8px;">' +
+    '                    <span style="font-size: 9.5px; font-weight: bold; color: #7A7A72; display: inline-block; width: 60px; text-transform: uppercase; font-family: sans-serif;">GRADE:</span>' +
+    '                    <span style="font-size: 12.5px; font-weight: bold; color: #0E1C35; font-family: sans-serif; line-height: 1;">' + grade + '</span>' +
+    '                  </div>' +
+    '                  <div style="display: flex; align-items: center; margin-bottom: 8px;">' +
+    '                    <span style="font-size: 9.5px; font-weight: bold; color: #7A7A72; display: inline-block; width: 60px; text-transform: uppercase; font-family: sans-serif;">CITY:</span>' +
+    '                    <span style="font-size: 12.5px; font-weight: bold; color: #0E1C35; font-family: sans-serif; line-height: 1;">' + city + '</span>' +
+    '                  </div>' +
+    '                  <div style="display: flex; align-items: center; margin-bottom: 8px;">' +
+    '                    <span style="font-size: 9.5px; font-weight: bold; color: #7A7A72; display: inline-block; width: 60px; text-transform: uppercase; font-family: sans-serif;">ISSUED:</span>' +
+    '                    <span style="font-size: 12.5px; font-weight: bold; color: #0E1C35; font-family: sans-serif; line-height: 1;">June 2026</span>' +
+    '                  </div>' +
+    '                </div>' +
+    '              </div>' +
+    '              ' +
+    '            </div>' +
+    '            ' +
+    '            <!-- Footer Band (navy background, natural flow below body, margin-top 20px gap, 14px vertical 24px horizontal padding) -->' +
+    '            <div class="footer-band">' +
+    '              <div style="font-size: 11px; font-weight: bold; color: #ffffff; text-transform: uppercase; font-family: sans-serif; letter-spacing: 0.5px; margin-bottom: 4px; text-align: center;">BRIGHT MIND INSTITUTE OF EDUCATION</div>' +
+    '              <div style="font-size: 9px; font-weight: bold; color: #E05C1A; font-family: sans-serif; letter-spacing: 0.3px; text-align: center;">Address: Manzoor Colony, Karachi, Pak &nbsp;|&nbsp; Support: +92 310 2310119</div>' +
+    '            </div>' +
+    '            ' +
     '          </div>' +
     '        </td>' +
     '        ' +
@@ -492,72 +487,61 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '          <div style="font-family: sans-serif; font-size: 9.5px; font-weight: bold; color: #7A7A72; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.8px;">▼ Back Side (Cut Border)</div>' +
     '          ' +
     '          <div class="back-card-container">' +
-    '            <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%; border-collapse: collapse;">' +
-    '              <tr>' +
-    '                <td style="vertical-align: middle; text-align: center; padding: 25px 15px;">' +
-    '                  ' +
-    '                  <!-- White Backing Banner for Back Logo Standout -->' +
-    '                  <table border="0" cellpadding="0" cellspacing="0" style="width: 170px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; border: 2px solid #E05C1A; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">' +
-    '                    <tr>' +
-    '                      <td style="padding: 10px; text-align: center; vertical-align: middle;">' +
-    '                        <img src="' + logoUrl + '" style="height: 38px; display: block; margin: 0 auto; border: 0;" alt="BMIE" />' +
-    '                      </td>' +
-    '                    </tr>' +
-    '                  </table>' +
-    '                  ' +
-    '                  <!-- Segment Divider SVG -->' +
-    '                  <div style="margin-top: 18px; height: 10px; overflow: hidden; text-align: center;">' +
-    '                    <svg width="200" height="10" viewBox="0 0 200 10" fill="none" style="display: block; margin: 0 auto;">' +
-    '                      <line x1="0" y1="5" x2="200" y2="5" stroke="#E05C1A" stroke-width="2" stroke-dasharray="8 4" />' +
-    '                    </svg>' +
-    '                  </div>' +
-    '                  ' +
-    '                  <!-- Back Header Titles -->' +
-    '                  <div style="margin-top: 15px; color: #ffffff; font-family: sans-serif; text-transform: uppercase; font-weight: bold; font-size: 12px; letter-spacing: 1px; line-height: 1.3; text-align: center;">' +
-    '                    AI SUMMER CAMP 2026' +
-    '                  </div>' +
-    '                  <div style="margin-top: 2px; color: #E05C1A; font-family: sans-serif; font-size: 8.5px; font-weight: bold; letter-spacing: 0.5px; text-align: center; text-transform: uppercase;">' +
-    '                    STUDENT IDENTIFICATION BADGE' +
-    '                  </div>' +
-    '                  ' +
-    '                  <!-- Rules & Conduct Policy Section (Fills empty vertical space perfectly) -->' +
-    '                  <div style="margin-top: 18px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 12px; text-align: left;">' +
-    '                    <div style="font-size: 8.5px; font-weight: bold; color: #E05C1A; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; padding-left: 5px;">CAMP RULES & ADVOCACY:</div>' +
-    '                    <table border="0" cellpadding="0" cellspacing="3" style="width: 100%; font-family: sans-serif; font-size: 9px; color: #CBD5E0; line-height: 1.4;">' +
-    '                      <tr>' +
-    '                        <td style="vertical-align: top; width: 10px; color: #E05C1A; font-weight: bold;">•</td>' +
-    '                        <td>Keep this badge clearly visible at all times during camp sessions and visits.</td>' +
-    '                      </tr>' +
-    '                      <tr>' +
-    '                        <td style="vertical-align: top; width: 10px; color: #E05C1A; font-weight: bold;">•</td>' +
-    '                        <td>Please bring your active student laptop and charger array daily.</td>' +
-    '                      </tr>' +
-    '                      <tr>' +
-    '                        <td style="vertical-align: top; width: 10px; color: #E05C1A; font-weight: bold;">•</td>' +
-    '                        <td>This card remains high-security property of BMIE and is non-transferable.</td>' +
-    '                      </tr>' +
-    '                      <tr>' +
-    '                        <td style="vertical-align: top; width: 10px; color: #E05C1A; font-weight: bold;">•</td>' +
-    '                        <td>If found, please immediately notify BMIE Admin at +92 310 2310119.</td>' +
-    '                      </tr>' +
-    '                    </table>' +
-    '                  </div>' +
-    '                  ' +
-    '                </td>' +
-    '              </tr>' +
+    '            ' +
+    '            <!-- Back Header Band (identical to front but back header style) -->' +
+    '            <div class="header-band">' +
+    '              <!-- Logo Badge -->' +
+    '              <div class="logo-badge">' +
+    '                <img src="' + logoUrl + '" style="width: 38px; height: 38px; object-fit: contain; display: block;" alt="Brightmind Logo" />' +
+    '              </div>' +
     '              ' +
-    '              <!-- Back Card Bottom Branding Belt -->' +
-    '              <tr>' +
-    '                <td style="height: 52px; background-color: #0c1424; vertical-align: middle; text-align: center; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">' +
-    '                  <div style="color: #ffffff; font-family: sans-serif; font-size: 8px; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">' +
-    '                    BRIGHT MIND INSTITUTE OF EDUCATION' +
-    '                  </div>' +
-    '                  <div style="color: #7A7A72; font-family: sans-serif; font-size: 7.5px; font-weight: bold; margin-top: 1px;">' +
-    '                    WhatsApp Hotline Support: +92 310 2310119' +
-    '                  </div>' +
-    '                </td>' +
-    '              </tr>' +
-    '            </table>' +
+    '              <!-- Back Tag -->' +
+    '              <div class="card-tag" style="text-align: right;">' +
+    '                <div style="font-size: 13px; font-weight: bold; color: #ffffff; text-transform: uppercase; font-family: sans-serif; letter-spacing: 0.5px; margin-bottom: 3px;">BACK BADGE</div>' +
+    '                <div style="display: inline-block; background-color: rgba(255,255,255,0.25); padding: 2px 8px; border-radius: 12px; font-size: 9px; font-weight: bold; color: #ffffff; text-transform: uppercase; font-family: sans-serif; letter-spacing: 0.5px;">SECURE VERIFIED</div>' +
+    '              </div>' +
+    '              ' +
+    '              <div class="header-accent" style="background-color: #E05C1A;"></div>' +
+    '            </div>' +
+    '            ' +
+    '            <!-- Back Body Content (padding: 26px 24px 22px 24px, no fixed height) -->' +
+    '            <div style="padding: 26px 24px 22px 24px; box-sizing: border-box; text-align: left;">' +
+    '              <!-- Centered Title and Subtitle -->' +
+    '              <div style="text-align: center; margin-bottom: 16px;">' +
+    '                <div style="font-size: 16px; font-weight: bold; color: #ffffff; text-transform: uppercase; font-family: sans-serif; letter-spacing: 1px; margin-bottom: 4px;">AI SUMMER CAMP 2026</div>' +
+    '                <div style="font-size: 10px; font-weight: bold; color: #E05C1A; text-transform: uppercase; font-family: sans-serif; letter-spacing: 0.8px;">Student Identification Badge</div>' +
+    '              </div>' +
+    '              ' +
+    '              <!-- Camp Rules List with 11px text and 1.6 line-height -->' +
+    '              <div style="border-top: 1px solid rgba(255,255,255,0.15); padding-top: 14px;">' +
+    '                <div style="font-size: 9.5px; font-weight: bold; color: #E05C1A; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">CAMP RULES & ADVOCACY:</div>' +
+    '                <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; font-family: sans-serif; font-size: 11px; color: #CBD5E0; line-height: 1.6; border-collapse: collapse;">' +
+    '                  <tr>' +
+    '                    <td style="vertical-align: top; width: 14px; color: #E05C1A; font-weight: bold; font-size: 14px; line-height: 1.1; padding-bottom: 8px;">&bull;</td>' +
+    '                    <td style="padding-bottom: 8px; font-family: sans-serif;">Keep this badge clearly visible at all times during camp sessions and visits.</td>' +
+    '                  </tr>' +
+    '                  <tr>' +
+    '                    <td style="vertical-align: top; width: 14px; color: #E05C1A; font-weight: bold; font-size: 14px; line-height: 1.1; padding-bottom: 8px;">&bull;</td>' +
+    '                    <td style="padding-bottom: 8px; font-family: sans-serif;">Please bring your active student laptop and charger array daily.</td>' +
+    '                  </tr>' +
+    '                  <tr>' +
+    '                    <td style="vertical-align: top; width: 14px; color: #E05C1A; font-weight: bold; font-size: 14px; line-height: 1.1; padding-bottom: 8px;">&bull;</td>' +
+    '                    <td style="padding-bottom: 8px; font-family: sans-serif;">This card remains high-security property of BMIE and is non-transferable.</td>' +
+    '                  </tr>' +
+    '                  <tr>' +
+    '                    <td style="vertical-align: top; width: 14px; color: #E05C1A; font-weight: bold; font-size: 14px; line-height: 1.1; padding-bottom: 8px;">&bull;</td>' +
+    '                    <td style="padding-bottom: 8px; font-family: sans-serif;">If found, please immediately notify BMIE Admin at +92 310 2310119.</td>' +
+    '                  </tr>' +
+    '                </table>' +
+    '              </div>' +
+    '            </div>' +
+    '            ' +
+    '            <!-- Matching Footer Band (margin-top 20px, consistent with front, dark navy background #0c1424, 14px vertical 24px horizontal padding) -->' +
+    '            <div class="footer-band" style="background-color: #0c1424; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 20px;">' +
+    '              <div style="font-size: 11px; font-weight: bold; color: #ffffff; text-transform: uppercase; font-family: sans-serif; letter-spacing: 0.5px; margin-bottom: 4px; text-align: center;">BRIGHT MIND INSTITUTE OF EDUCATION</div>' +
+    '              <div style="font-size: 9px; font-weight: bold; color: #E05C1A; font-family: sans-serif; letter-spacing: 0.3px; text-align: center;">WhatsApp Hotline Support: +92 310 2310119 &nbsp;|&nbsp; Karachi, Pak</div>' +
+    '            </div>' +
+    '            ' +
     '          </div>' +
     '        </td>' +
     '        ' +
