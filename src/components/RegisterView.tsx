@@ -177,7 +177,14 @@ export default function RegisterView() {
     });
 
     if (!response.ok) {
-      throw new Error(`Google Sheet integration returned status ${response.status}`);
+      let errorMessage = `Server proxy returned error status: ${response.status}`;
+      try {
+        const errorData = await response.json();
+        if (errorData && errorData.error) {
+          errorMessage = errorData.error;
+        }
+      } catch (parseError) {}
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
@@ -218,23 +225,17 @@ export default function RegisterView() {
         setSyncStatus('synced');
         setSubmissionSuccess(refNum);
       } else {
-        throw new Error(data?.error || 'Validation error or unexpected status returned from Google Sheet webhook.');
+        throw new Error(data?.error || 'Unknown error occurred in saveRegistration backend.');
       }
     } catch (err: any) {
       console.error('Database Sync Error:', err);
-      
-      // Fallback behavior if direct sync to live Sheets fails, ensuring local backup preservation
-      const offlineRef = generateRefNum();
-      const backupPayload = {
-        timestamp: new Date().toISOString(),
-        refNo: offlineRef,
-        ...formData
-      };
-      saveLocalBackup(backupPayload);
-      
-      // Set backup sync status
-      setSyncStatus('local_backup');
-      setSubmissionSuccess(offlineRef);
+      // Show honest, specific error message to the student including the actual error text
+      setErrors([
+        'Registration submission failed. Your registration details were NOT saved.',
+        `Reason/Details: ${err.message || 'The Google Apps Script backend returned an unexpected response. Please contact administration.'}`
+      ]);
+      // Scroll to the error banner at the top of the registration panel
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setIsSubmitting(false);
     }
