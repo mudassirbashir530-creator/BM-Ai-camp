@@ -213,9 +213,11 @@ export default function RegisterView() {
           ...formData
         };
 
-        // Save directly to Firebase Firestore Database for redundancy
+        // Save directly to Firebase Firestore Database for redundancy (Asynchronously, without blocking success screen)
         try {
-          await addDoc(collection(db, 'registrations'), backupPayload);
+          addDoc(collection(db, 'registrations'), backupPayload)
+            .then(() => console.log('Firestore redundancy backup saved successfully.'))
+            .catch((dbErr) => console.warn('Firestore redundancy backup rejected:', dbErr));
         } catch (dbErr) {
           console.warn('Firestore redundancy backup skipped:', dbErr);
         }
