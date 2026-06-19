@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
+import { GAS_URL } from "./src/config";
 
 async function startServer() {
   const app = express();
@@ -13,9 +14,9 @@ async function startServer() {
   app.post("/api/register", async (req, res) => {
     try {
       const payload = req.body;
-      const gasUrl = 'https://script.google.com/macros/s/AKfycbxa8_nL_nr_cBtb1PfqbYnJYgrtXx1G8pQbv3mAZzLdqANO8LpnLfLhOX_Jlzrz5eqU/exec';
+      const gasUrl = GAS_URL;
 
-      console.log('Proxying registration request to Google Apps Script...');
+      console.log('Proxying registration request to Google Apps Script. URL:', gasUrl);
       const response = await fetch(gasUrl, {
         method: 'POST',
         headers: {

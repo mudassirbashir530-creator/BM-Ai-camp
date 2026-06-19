@@ -956,6 +956,7 @@ function submitForm() {
   document.getElementById('loading').classList.add('show');
 
   // Submit collected data
+  console.log("Submitting to:", GAS_URL);
   fetch(GAS_URL, {
     method: 'POST',
     mode: 'cors',
@@ -982,14 +983,20 @@ function submitForm() {
       window.scrollTo(0, 0);
     } else {
       document.getElementById('loading').classList.remove('show');
-      document.getElementById('conn-err').style.display='block';
+      var errBox = document.getElementById('conn-err');
+      errBox.querySelector('h4').textContent = '⚠ Submission Failed';
+      errBox.querySelector('p').innerHTML = 'The server returned an error: <b>' + (result.error || 'Unknown server error') + '</b>.<br>Please try again or contact us on WhatsApp: <b>+92 310 2310119</b>';
+      errBox.style.display='block';
       document.getElementById('submit-btn').disabled=false;
     }
   })
   .catch(function(err){
     console.error('Fetch registration error:', err);
     document.getElementById('loading').classList.remove('show');
-    document.getElementById('conn-err').style.display='block';
+    var errBox = document.getElementById('conn-err');
+    errBox.querySelector('h4').textContent = '⚠ Connection / Server Error';
+    errBox.querySelector('p').innerHTML = 'An unexpected error occurred during submit: <b>' + (err.message || err.toString()) + '</b>.<br>Please verify your connection or contact WhatsApp: <b>+92 310 2310119</b>';
+    errBox.style.display='block';
     document.getElementById('submit-btn').disabled=false;
   });
 }

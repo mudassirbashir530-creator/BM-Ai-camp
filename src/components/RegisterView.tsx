@@ -20,6 +20,7 @@ import { RegistrationFormData } from '../types';
 import InstituteLogo from './InstituteLogo';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { GAS_URL } from '../config';
 
 export default function RegisterView() {
   const [currentStep, setCurrentStep] = useState<number>(1);
@@ -168,16 +169,18 @@ export default function RegisterView() {
       motivation: fields.motivation
     };
 
-    const response = await fetch('/api/register', {
+    console.log("Submitting to:", GAS_URL);
+    const response = await fetch(GAS_URL, {
       method: 'POST',
+      mode: 'cors',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'text/plain;charset=utf-8'
       },
       body: JSON.stringify(payload)
     });
 
     if (!response.ok) {
-      let errorMessage = `Server proxy returned error status: ${response.status}`;
+      let errorMessage = `Google Apps Script returned error status: ${response.status}`;
       try {
         const errorData = await response.json();
         if (errorData && errorData.error) {
@@ -357,17 +360,10 @@ export default function RegisterView() {
           <h2 className="font-display text-4xl text-navy font-medium tracking-tight">Registration Complete!</h2>
           
           <div className="flex justify-center pb-2">
-            {syncStatus === 'synced' ? (
-              <span className="inline-flex items-center px-4 py-1.5 rounded-full text-[11px] font-semibold font-mono bg-green-50 text-green-700 border border-green-200">
-                <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" />
-                Synced with Google Sheets
-              </span>
-            ) : (
-              <span className="inline-flex items-center px-4 py-1.5 rounded-full text-[11px] font-semibold font-mono bg-amber-50 text-amber-700 border border-amber-250">
-                <span className="w-2 h-2 bg-amber-500 rounded-full mr-2" />
-                Saved Locally &amp; Queued for Sync
-              </span>
-            )}
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full text-[11px] font-semibold font-mono bg-green-50 text-green-700 border border-green-200">
+              <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" />
+              Synced with Google Sheets
+            </span>
           </div>
 
           <div className="py-4 px-6 bg-[#FAF7F2] rounded-sm divide-y divide-border space-y-3 font-mono text-sm">
@@ -385,16 +381,8 @@ export default function RegisterView() {
             </div>
           </div>
 
-          {syncStatus === 'local_backup' && (
-            <div className="p-3.5 bg-amber-50/70 border border-amber-200/50 rounded-sm text-left mx-auto max-w-md no-print">
-              <p className="font-sans text-[11px] text-amber-900 leading-normal">
-                <strong>System Notice:</strong> Google Sheets was momentarily unreachable during transfer, so your registration has been safely captured in local browser memory. No further action is required — our systems will auto-sync this registration for you.
-              </p>
-            </div>
-          )}
-
           <p className="font-sans text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
-            Congratulations. Your registration credentials have been backed up. Please take a screenshot of your unique reference number or save this page. 
+            Congratulations. Your registration Details have been saved. Please take a screenshot of your unique reference number or save this page. 
             Bright Mind staff will contact you soon on the provided email (<span className="text-navy font-semibold">{formData.email}</span>) or WhatsApp.
           </p>
           <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
