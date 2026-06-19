@@ -251,90 +251,219 @@ function sendEmailWithIDCard(data, refNum, fullName) {
   var city         = data.city || "Karachi";
   
   // ── 1. Create PDF Student ID Card ──
-  // Using clean inline HTML table styling for cross-compatibility with Google Apps Script's PDF generator engine
+  // Using high-fidelity inline CSS & layout perfectly optimized for Google's PDF converter engine.
+  // Standard CSS shapes and tables are utilized to support rounded borders, custom branding, and a portrait credit card dimension.
   var idCardHtml = 
     '<html>' +
     '<head>' +
-    '  <meta charset="utf-8">' +
+    '  <meta charset="UTF-8">' +
     '  <style>' +
-    '    body { margin: 0; padding: 20px; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background-color: #ffffff; }' +
+    '    body {' +
+    '      margin: 0;' +
+    '      padding: 0;' +
+    '      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;' +
+    '      background-color: #ffffff;' +
+    '      -webkit-print-color-adjust: exact;' +
+    '    }' +
+    '    .card-container {' +
+    '      width: 340px;' +
+    '      height: 520px;' +
+    '      background-color: #FAF7F2;' +
+    '      border: 3px solid #0E1C35;' +
+    '      border-radius: 16px;' +
+    '      position: relative;' +
+    '      overflow: hidden;' +
+    '      box-sizing: border-box;' +
+    '      margin: 40px auto;' +
+    '      box-shadow: 0 6px 15px rgba(0,0,0,0.15);' +
+    '    }' +
+    '    .back-card-container {' +
+    '      width: 340px;' +
+    '      height: 520px;' +
+    '      background-color: #0E1C35;' +
+    '      border: 3px solid #E05C1A;' +
+    '      border-radius: 16px;' +
+    '      position: relative;' +
+    '      overflow: hidden;' +
+    '      box-sizing: border-box;' +
+    '      margin: 40px auto;' +
+    '      box-shadow: 0 6px 15px rgba(0,0,0,0.15);' +
+    '    }' +
     '  </style>' +
     '</head>' +
     '<body>' +
-    '  <table border="0" cellpadding="0" cellspacing="0" style="width: 480px; height: 280px; background-color: #FAF7F2; border: 4px solid #0E1C35; border-radius: 12px; border-collapse: separate; overflow: hidden; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">' +
-    '    <!-- Header -->' +
-    '    <tr style="background-color: #0E1C35;">' +
-    '      <td style="padding: 12px 18px; vertical-align: middle;">' +
-    '        <img src="https://i.ibb.co/k2b42LsD/23ae5ef8-a3ae-4399-8cfd-be88f3a82bce-removalai-preview.png" alt="Bright Mind" style="height: 32px; filter: brightness(0) invert(1);" />' +
-    '      </td>' +
-    '      <td style="padding: 12px 18px; text-align: right; vertical-align: middle;">' +
-    '        <span style="color: #ffffff; font-size: 15px; font-weight: bold; display: block; letter-spacing: 0.5px; text-transform: uppercase;">ID CARD</span>' +
-    '        <span style="background-color: #E05C1A; color: #ffffff; padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; text-transform: uppercase; margin-top: 4px; display: inline-block;">STUDENT COHORT</span>' +
-    '      </td>' +
-    '    </tr>' +
-    '    ' +
-    '    <!-- Card Body Content -->' +
-    '    <tr>' +
-    '      <td colspan="2" style="padding: 15px 18px; vertical-align: top;">' +
-    '        <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">' +
-    '          <tr>' +
-    '            <!-- Photo Box -->' +
-    '            <td style="width: 100px; vertical-align: top;">' +
-    '              <div style="width: 100px; height: 115px; border: 2px dashed #0E1C35; border-radius: 8px; background-color: #ffffff; text-align: center; color: #888880; display: table-cell; vertical-align: middle;">' +
-    '                <span style="font-size: 9px; font-weight: bold; line-height: 14px; text-transform: uppercase;">Paste<br>Photograph<br>Here</span>' +
-    '              </div>' +
-    '            </td>' +
-    '            ' +
-    '            <!-- Details Column -->' +
-    '            <td style="padding-left: 20px; vertical-align: top;">' +
-    '              <div style="font-size: 20px; font-weight: bold; color: #0E1C35; margin-bottom: 2px; text-transform: capitalize; letter-spacing: -0.5px;">' + studentName + '</div>' +
-    '              <div style="font-size: 12px; font-weight: bold; color: #E05C1A; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">AI Summer Camp 2026</div>' +
+    '  ' +
+    '  <!-- FRONT OF CARD -->' +
+    '  <div class="card-container">' +
+    '    <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%; table-layout: fixed; border-collapse: collapse;">' +
+    '      <!-- Logo Row (Solid white backdrop to prevent a dark transparent PNG from getting lost) -->' +
+    '      <tr>' +
+    '        <td style="height: 75px; background-color: #ffffff; text-align: center; vertical-align: middle;">' +
+    '          <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">' +
+    '            <tr>' +
+    '              <td style="text-align: center; padding: 10px 0;">' +
+    '                <img src="https://i.ibb.co/k2b42LsD/23ae5ef8-a3ae-4399-8cfd-be88f3a82bce-removalai-preview.png" style="height: 48px; border: 0; display: block; margin: 0 auto;" alt="Bright Mind Logo" />' +
+    '              </td>' +
+    '            </tr>' +
+    '          </table>' +
+    '        </td>' +
+    '      </tr>' +
+    '      ' +
+    '      <!-- Corporate Diagonal Angled Strip Divider (No CSS rotate, using vector SVG for guaranteed PDF sharpness) -->' +
+    '      <tr>' +
+    '        <td style="height: 45px; padding: 0; margin: 0; vertical-align: top;">' +
+    '          <svg width="340" height="45" viewBox="0 0 340 45" fill="none" style="display: block; margin: 0; padding: 0;">' +
+    '            <!-- Navy Blue Diagonal Stripe -->' +
+    '            <path d="M0 0 L340 15 V35 L0 20 Z" fill="#0E1C35"/>' +
+    '            <!-- Orange Accent Parallel Stripe -->' +
+    '            <path d="M0 20 L340 35 V42 L0 27 Z" fill="#E05C1A"/>' +
+    '          </svg>' +
+    '        </td>' +
+    '      </tr>' +
+    '      ' +
+    '      <!-- Main Details Stage -->' +
+    '      <tr>' +
+    '        <td style="vertical-align: top; padding: 14px 18px 5px 18px;">' +
+    '          <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: auto;">' +
+    '            <tr>' +
+    '              <!-- Circular Portrait Frame on Left -->' +
+    '              <td style="width: 110px; vertical-align: top; text-align: center; padding-top: 5px;">' +
+    '                <table border="0" cellpadding="0" cellspacing="0" style="width: 95px; height: 95px; margin: 0 auto;">' +
+    '                  <tr>' +
+    '                    <td style="border: 3px solid #E05C1A; border-radius: 50%; background-color: #ffffff; text-align: center; vertical-align: middle; padding: 4px; border-collapse: separate;">' +
+    '                      <div style="font-size: 8px; font-weight: bold; line-height: 12px; color: #0E1C35; font-family: sans-serif; text-transform: uppercase;">' +
+    '                        PASTE<br/>PHOTOGRAPH<br/>HERE' +
+    '                      </div>' +
+    '                    </td>' +
+    '                  </tr>' +
+    '                </table>' +
+    '                <div style="margin-top: 25px; text-align: center;">' +
+    '                  <span style="background-color: #0E1C35; color: #ffffff; padding: 3px 9px; border-radius: 4px; font-size: 8px; font-weight: bold; text-transform: uppercase; font-family: sans-serif; display: inline-block; letter-spacing: 0.5px;">' +
+    '                    STUDENT COHORT' +
+    '                  </span>' +
+    '                </div>' +
+    '              </td>' +
     '              ' +
-    '              <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; font-size: 11px;">' +
-    '                <tr>' +
-    '                  <td style="padding: 2.5px 0; color: #7A7A72; font-weight: bold; width: 65px;">Student ID:</td>' +
-    '                  <td style="padding: 2.5px 0; color: #0E1C35; font-weight: bold; font-family: Courier, monospace;">' + refNum + '</td>' +
-    '                </tr>' +
-    '                <tr>' +
-    '                  <td style="padding: 2.5px 0; color: #7A7A72; font-weight: bold;">Class Grade:</td>' +
-    '                  <td style="padding: 2.5px 0; color: #0E1C35; font-weight: 500;">' + grade + '</td>' +
-    '                </tr>' +
-    '                <tr>' +
-    '                  <td style="padding: 2.5px 0; color: #7A7A72; font-weight: bold;">Location:</td>' +
-    '                  <td style="padding: 2.5px 0; color: #0E1C35; font-weight: 500;">' + city + '</td>' +
-    '                </tr>' +
-    '                <tr>' +
-    '                  <td style="padding: 2.5px 0; color: #7A7A72; font-weight: bold;">Date Issue:</td>' +
-    '                  <td style="padding: 2.5px 0; color: #0E1C35; font-weight: 500;">June 2026</td>' +
-    '                </tr>' +
-    '              </table>' +
-    '            </td>' +
-    '          </tr>' +
-    '        </table>' +
-    '      </td>' +
-    '    </tr>' +
-    '    ' +
-    '    <!-- Footer Banner -->' +
-    '    <tr style="background-color: #111118; color: #ffffff;">' +
-    '      <td colspan="2" style="padding: 8px 18px; font-size: 10px; border-collapse: collapse;">' +
-    '        <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">' +
-    '          <tr>' +
-    '            <td style="text-align: left; opacity: 0.85; color: #ffffff;">' +
-    '              &#128205; Manzoor Colony, Karachi, Pakistan' +
-    '            </td>' +
-    '            <td style="text-align: right; opacity: 0.85; font-weight: bold; color: #ffffff;">' +
-    '              &#128222; +92 310 2310119' +
-    '            </td>' +
-    '          </tr>' +
-    '          <tr>' +
-    '            <td colspan="2" style="text-align: center; color: #E05C1A; padding-top: 5px; font-weight: bold; font-size: 9px; letter-spacing: 0.5px; text-transform: uppercase;">' +
-    '              Bright Mind Institute of Education' +
-    '            </td>' +
-    '          </tr>' +
-    '        </table>' +
-    '      </td>' +
-    '    </tr>' +
-    '  </table>' +
+    '              <!-- Right Column: Student Core Data -->' +
+    '              <td style="padding-left: 18px; vertical-align: top;">' +
+    '                <!-- Large Bold Name -->' +
+    '                <div style="font-size: 18px; font-weight: bold; color: #0E1C35; margin-bottom: 2px; text-transform: capitalize; font-family: sans-serif; letter-spacing: -0.3px;">' +
+    '                  ' + studentName + '' +
+    '                </div>' +
+    '                <!-- Program Caption -->' +
+    '                <div style="font-size: 9px; font-weight: bold; color: #E05C1A; margin-bottom: 15px; text-transform: uppercase; font-family: sans-serif; letter-spacing: 0.8px;">' +
+    '                  AI SUMMER CAMP 2026' +
+    '                </div>' +
+    '                ' +
+    '                <!-- Metadata Matrix Table -->' +
+    '                <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; font-size: 10px; font-family: sans-serif; color: #0E1C35;">' +
+    '                  <tr>' +
+    '                    <td style="padding: 4px 0; color: #7A7A72; font-weight: bold; width: 62px;">Student ID:</td>' +
+    '                    <td style="padding: 4px 0; color: #E05C1A; font-weight: bold; font-family: Courier, monospace; font-size: 11.5px;">' + refNum + '</td>' +
+    '                  </tr>' +
+    '                  <tr>' +
+    '                    <td style="padding: 4px 0; color: #7A7A72; font-weight: bold;">Grade:</td>' +
+    '                    <td style="padding: 4px 0; font-weight: bold;">' + grade + '</td>' +
+    '                  </tr>' +
+    '                  <tr>' +
+    '                    <td style="padding: 4px 0; color: #7A7A72; font-weight: bold;">City:</td>' +
+    '                    <td style="padding: 4px 0; font-weight: bold;">' + city + '</td>' +
+    '                  </tr>' +
+    '                  <tr>' +
+    '                    <td style="padding: 4px 0; color: #7A7A72; font-weight: bold;">Date Issued:</td>' +
+    '                    <td style="padding: 4px 0; font-weight: bold;">June 2026</td>' +
+    '                  </tr>' +
+    '                </table>' +
+    '              </td>' +
+    '            </tr>' +
+    '          </table>' +
+    '        </td>' +
+    '      </tr>' +
+    '      ' +
+    '      <!-- Premium Solid Footer Bottom Strip -->' +
+    '      <tr>' +
+    '        <td style="height: 60px; background-color: #0E1C35; vertical-align: middle; text-align: center; padding: 6px 12px;">' +
+    '          <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">' +
+    '            <tr>' +
+    '              <td style="text-align: center; color: #ffffff; font-family: sans-serif; font-weight: bold; font-size: 9px; letter-spacing: 0.6px; text-transform: uppercase; padding-bottom: 2px;">' +
+    '                BRIGHT MIND INSTITUTE OF EDUCATION' +
+    '              </td>' +
+    '            </tr>' +
+    '            <tr>' +
+    '              <td style="text-align: center; color: #E05C1A; font-family: sans-serif; font-size: 8px; font-weight: bold;">' +
+    '                Address: Manzoor Colony, Karachi, Pakistan &nbsp;|&nbsp; Support: +92 310 2310119' +
+    '              </td>' +
+    '            </tr>' +
+    '          </table>' +
+    '        </td>' +
+    '      </tr>' +
+    '    </table>' +
+    '  </div>' +
+    '  ' +
+    '  <!-- Page Break for Premium Back of Card (Optional second page) -->' +
+    '  <div style="page-break-before: always;"></div>' +
+    '  ' +
+    '  <!-- BACK OF CARD -->' +
+    '  <div class="back-card-container">' +
+    '    <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%; table-layout: fixed; border-collapse: collapse;">' +
+    '      <tr>' +
+    '        <td style="vertical-align: middle; text-align: center; padding: 30px 20px;">' +
+    '          ' +
+    '          <!-- Centered White Pill Holder for Logo (Keeps it cleanly visible and stylized) -->' +
+    '          <table border="0" cellpadding="0" cellspacing="0" style="width: 180px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; border: 2px solid #E05C1A; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">' +
+    '            <tr>' +
+    '              <td style="padding: 15px; text-align: center; vertical-align: middle;">' +
+    '                <img src="https://i.ibb.co/k2b42LsD/23ae5ef8-a3ae-4399-8cfd-be88f3a82bce-removalai-preview.png" style="height: 40px; display: block; margin: 0 auto; border: 0;" alt="Bright Mind" />' +
+    '              </td>' +
+    '            </tr>' +
+    '          </table>' +
+    '          ' +
+    '          <!-- Decorative dotted separator -->' +
+    '          <div style="margin-top: 25px; height: 10px; overflow: hidden; text-align: center;">' +
+    '            <svg width="200" height="10" viewBox="0 0 200 10" fill="none" style="display: block; margin: 0 auto;">' +
+    '              <line x1="0" y1="5" x2="200" y2="5" stroke="#E05C1A" stroke-width="2" stroke-dasharray="8 4" />' +
+    '            </svg>' +
+    '          </div>' +
+    '          ' +
+    '          <!-- Back Badge Header labels -->' +
+    '          <div style="margin-top: 25px; color: #ffffff; font-family: sans-serif; text-transform: uppercase; font-weight: bold; font-size: 13px; letter-spacing: 1px; line-height: 1.4;">' +
+    '            AI SUMMER CAMP 2026' +
+    '          </div>' +
+    '          <div style="margin-top: 4px; color: #E05C1A; font-family: sans-serif; font-size: 9px; font-weight: bold; letter-spacing: 0.5px;">' +
+    '            STUDENT IDENTIFICATION BADGE' +
+    '          </div>' +
+    '          ' +
+    '          <!-- Terms Statement -->' +
+    '          <div style="margin-top: 35px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 15px; margin-left: 15px; margin-right: 15px;">' +
+    '            <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; font-family: sans-serif; font-size: 8.5px; color: #A0AFC0; line-height: 1.5; text-align: center;">' +
+    '              <tr>' +
+    '                <td style="padding-bottom: 6px; font-weight: bold;">' +
+    '                  This card is the official property of Bright Mind Institute of Education. Please keep it visible at all times during camp sessions.' +
+    '                </td>' +
+    '              </tr>' +
+    '              <tr>' +
+    '                <td style="color: #ffffff; font-weight: bold; font-size: 8.5px; padding-top: 4px;">' +
+    '                  If found, please contact WhatsApp Support:<br/>' +
+    '                  +92 310 2310119' +
+    '                </td>' +
+    '              </tr>' +
+    '            </table>' +
+    '          </div>' +
+    '          ' +
+    '        </td>' +
+    '      </tr>' +
+    '      ' +
+    '      <!-- Bottom Branding Belt -->' +
+    '      <tr>' +
+    '        <td style="height: 50px; background-color: #0c1424; vertical-align: middle; text-align: center; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">' +
+    '          <div style="color: #ffffff; font-family: sans-serif; font-size: 8.5px; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">' +
+    '            BRIGHT MIND INSTITUTE OF EDUCATION' +
+    '          </div>' +
+    '        </td>' +
+    '      </tr>' +
+    '    </table>' +
+    '  </div>' +
+    '  ' +
     '</body>' +
     '</html>';
 
@@ -348,16 +477,19 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     Logger.log("Failed to compile HTML ID card to PDF: " + pdfErr.toString());
   }
 
-  // ── 2. Create Email HTML Body ──
-  // A beautiful invitation box matching the corporate branding of Bright Mind
+  // ── 2. Create Email HTML Body (No emojis or numerical entities; using clean UTF-8 declaration and CSS indicators) ──
   var emailBodyHtml = 
     '<html>' +
+    '<head>' +
+    '  <meta charset="UTF-8">' +
+    '  <title>Registration Confirmation</title>' +
+    '</head>' +
     '<body style="font-family: Arial, sans-serif; background-color: #FAF7F2; padding: 25px; margin: 0; color: #222222;">' +
     '  <table border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; background-color: #ffffff; border: 1px solid #ddd8ce; border-radius: 8px; overflow: hidden; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">' +
     '    <!-- Brand Header -->' +
     '    <tr style="background-color: #0E1C35; text-align: center;">' +
     '      <td style="padding: 24px 15px;">' +
-    '        <img src="https://i.ibb.co/k2b42LsD/23ae5ef8-a3ae-4399-8cfd-be88f3a82bce-removalai-preview.png" alt="Bright Mind" style="height: 48px; filter: brightness(0) invert(1);" />' +
+    '        <img src="https://i.ibb.co/k2b42LsD/23ae5ef8-a3ae-4399-8cfd-be88f3a82bce-removalai-preview.png" alt="Bright Mind" style="height: 48px; border: 0;" />' +
     '        <div style="color: #FAF7F2; font-size: 14px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 8px;">Bright Mind Institute of Education</div>' +
     '      </td>' +
     '    </tr>' +
@@ -365,7 +497,9 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '    <!-- Welcome Content -->' +
     '    <tr>' +
     '      <td style="padding: 30px; line-height: 1.6; font-size: 15px; color: #333333;">' +
-    '        <h2 style="color: #0E1C35; font-size: 22px; margin-top: 0; font-weight: bold; border-bottom: 2px solid #FAF7F2; padding-bottom: 12px;">Registration Confirmed! &#127881;</h2>' +
+    '        <h2 style="color: #0E1C35; font-size: 22px; margin-top: 0; font-weight: bold; border-bottom: 2px solid #FAF7F2; padding-bottom: 12px;">' +
+    '          Registration Confirmed' +
+    '        </h2>' +
     '        <p>Dear <strong>' + studentName + '</strong>,</p>' +
     '        <p>Congratulations! We have successfully received your enrollment application for the upcoming <strong>AI Summer Camp 2026</strong> at the Bright Mind Institute of Education.</p>' +
     '        ' +
@@ -388,11 +522,15 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '        ' +
     '        <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; border: 1px solid #FAF7F2; background-color: #ffffff; padding: 15px; margin: 15px 0; border-radius: 6px;">' +
     '          <tr>' +
-    '            <td>' +
-    '              <strong>&#127971; Institute Venue:</strong><br>' +
-    '              Bright Mind Institute, Manzoor Colony, Karachi, Pakistan<br>' +
-    '              <strong>&#128172; Official Support (WhatsApp):</strong> +92 310 2310119<br>' +
-    '              <strong>&#9993; Email Contact:</strong> brightmindinstituteofeducation@gmail.com' +
+    '            <td style="line-height: 1.8;">' +
+    '              <span style="display: inline-block; width: 8px; height: 8px; background-color: #E05C1A; border-radius: 50%; margin-right: 6px; vertical-align: middle;"></span> ' +
+    '              <strong>Institute Venue:</strong> Bright Mind Institute, Manzoor Colony, Karachi, Pakistan<br/>' +
+    '              ' +
+    '              <span style="display: inline-block; width: 8px; height: 8px; background-color: #E05C1A; border-radius: 50%; margin-right: 6px; vertical-align: middle;"></span> ' +
+    '              <strong>Official Support (WhatsApp):</strong> +92 310 2310119<br/>' +
+    '              ' +
+    '              <span style="display: inline-block; width: 8px; height: 8px; background-color: #E05C1A; border-radius: 50%; margin-right: 6px; vertical-align: middle;"></span> ' +
+    '              <strong>Email Contact:</strong> brightmindinstituteofeducation@gmail.com' +
     '            </td>' +
     '          </tr>' +
     '        </table>' +
@@ -410,7 +548,7 @@ function sendEmailWithIDCard(data, refNum, fullName) {
     '    <!-- Minimal Footer -->' +
     '    <tr style="background-color: #111118; text-align: center; color: #888880; font-size: 11px;">' +
     '      <td style="padding: 15px;">' +
-    '        &copy; 2026 Bright Mind Institute. All Rights Reserved.<br>' +
+    '        Copyright 2026 Bright Mind Institute. All Rights Reserved.<br>' +
     '        Bright Mind Institute, Manzoor Colony, Karachi, Pakistan<br><br>' +
     '        If you did not initiate this registration, please disregard this email.' +
     '      </td>' +
@@ -489,5 +627,54 @@ function TEST_emailOnly() {
     Logger.log("Email sent successfully to " + yourTestingEmail);
   } catch (err) {
     Logger.log("TEST_emailOnly ERROR: " + err.toString());
+  }
+}
+
+/**
+ * Executes a full registration process simulation (saves to sheet, compiles 
+ * portrait PDF client badge, and emails recipient with UTF-8 character stability).
+ */
+function TEST_fullFlow() {
+  Logger.log("========================================");
+  Logger.log("Starting TEST_fullFlow for AI Summer Camp 2026...");
+  
+  // Choose the active Google user's email address or a reliable fallback
+  var testEmail = Session.getActiveUser().getEmail();
+  if (!testEmail) {
+    testEmail = "mudassirbashir530@gmail.com";
+  }
+  
+  var mockData = {
+    fname: "Mudassir",
+    lname: "Bashir",
+    email: testEmail.trim(),
+    phone: "+92 310 2310119",
+    city: "Karachi",
+    grade: "Grade 10",
+    dob: "2010-06-15",
+    gender: "Male",
+    gname: "Bashir Ahmed",
+    gphone: "+92 300 1234567",
+    relation: "Father",
+    school: "Bright Mind High School",
+    stream: "Science",
+    gradyear: "2028",
+    source: "Social Media",
+    ailevel: "Intermediate",
+    interest: "Generative AI, Agentic Workflows",
+    motivation: "I want to build real-world AI agents to solve local Pakistani community challenges."
+  };
+  
+  Logger.log("Testing recipient email set to: " + testEmail);
+  
+  try {
+    var response = saveRegistration(mockData);
+    Logger.log("[TEST SUCCESS] Registration saved, ID card PDF generated, and email sent successfully!");
+    Logger.log("JSON Response details: " + JSON.stringify(response));
+    Logger.log("========================================");
+  } catch (err) {
+    Logger.log("[TEST FAILED] Error during TEST_fullFlow execution: " + err.toString());
+    Logger.log("========================================");
+    throw err;
   }
 }
