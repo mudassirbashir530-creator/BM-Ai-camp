@@ -169,18 +169,17 @@ export default function RegisterView() {
       motivation: fields.motivation
     };
 
-    console.log("Submitting to:", GAS_URL);
-    const response = await fetch(GAS_URL, {
+    console.log("Submitting to server proxy /api/register");
+    const response = await fetch('/api/register', {
       method: 'POST',
-      mode: 'cors',
       headers: {
-        'Content-Type': 'text/plain;charset=utf-8'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(payload)
     });
 
     if (!response.ok) {
-      let errorMessage = `Google Apps Script returned error status: ${response.status}`;
+      let errorMessage = `Server proxy returned error status: ${response.status}`;
       try {
         const errorData = await response.json();
         if (errorData && errorData.error) {
